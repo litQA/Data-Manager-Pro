@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0.2-beta
+## 1.0.0.3-beta
 
 ### New Content
 - Custom loot procedures `Custom Loot Item`, `Custom Loot Condition Count`, and `Custom Loot Item By ID` that read JSON conditions from the server data pack, validate `type` and `target_block`, evaluate enchantment, potion and held-item predicates, and build the resulting ItemStack with count modifiers and NBT data.
@@ -18,6 +18,7 @@
 - Collection block identifiers, variable types and toolbox categories use the `fmpro_` prefix to avoid collisions with the official File Manager and Collection plugins.
 
 ### Fixes
+- Map insertion inspects the value input it actually uses, so MCItem values are converted correctly.
 - Folder iteration exposes a visible current-file block instead of a hidden helper.
 - ZIP append rewrites the archive through a temporary file so the central directory remains valid.
 - Data-pack paths accept `data/<namespace>/<path>`, `namespace:path` and bare paths, with `minecraft` as the default namespace.

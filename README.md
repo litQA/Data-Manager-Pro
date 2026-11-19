@@ -20,6 +20,8 @@ gradlew.bat pluginZip
 
 The archive is written to `build/distributions/file-manager-pro-2026.1.zip`. Place the archive in the MCreator plugins directory and restart MCreator with Java plugins enabled.
 
+The wrapper uses the public Gradle distribution URL by default. If that download fails, run `scripts/use-local-gradle.ps1` once; it resolves the workspace root from its own location, verifies `reference_resources/gradle-9.9.1-bin.zip`, and switches the wrapper to that local archive. Restore the public URL afterwards with `git checkout -- gradle/wrapper/gradle-wrapper.properties`.
+
 ## Variable Types
 
 The plugin registers `File`, `JsonObject`, `JsonArray`, `List`, `Map` and the internal `JsonElement` helper type. All types are available in local, global and session variable scopes.

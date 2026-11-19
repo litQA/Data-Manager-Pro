@@ -1,5 +1,5 @@
 <#include "mcitems.ftl">
-<#if input_id$element?starts_with("mcitem_all")>
+<#if input_id$map_value?starts_with("mcitem_all")>
 ${input$map}.put(${input$map_key},${mappedMCItemToItemStackCode(input$map_value,1)})
 <#else>
 <#if addTemplate??>
