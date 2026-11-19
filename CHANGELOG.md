@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0.1-beta
+## 1.0.0.2-beta
 
 ### New Content
 - Custom loot procedures `Custom Loot Item`, `Custom Loot Condition Count`, and `Custom Loot Item By ID` that read JSON conditions from the server data pack, validate `type` and `target_block`, evaluate enchantment, potion and held-item predicates, and build the resulting ItemStack with count modifiers and NBT data.

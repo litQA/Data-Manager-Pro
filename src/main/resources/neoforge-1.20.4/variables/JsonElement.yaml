@@ -5,6 +5,6 @@ scopes:
     get: ${name}
     set: ${name} = ${value};
   global_session:
-    init: public static JsonElement ${var.getName()} = com.google.gson.JsonNull.INSTANCE;
+    init: public static com.google.gson.JsonElement ${var.getName()} = com.google.gson.JsonNull.INSTANCE;
     get: ${JavaModName}Variables.${name}
     set: ${JavaModName}Variables.${name} = ${value};

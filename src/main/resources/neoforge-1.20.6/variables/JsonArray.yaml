@@ -1,10 +1,10 @@
-defaultvalue: new JsonArray()
+defaultvalue: new com.google.gson.JsonArray()
 scopes:
   local:
     init: ${var.getType().getJavaType(generator.getWorkspace())} ${var.getName()} = ${var.getType().getDefaultValue(generator.getWorkspace())};
     get: ${name}
     set: ${name} = ${value};
   global_session:
-    init: public static JsonArray ${var.getName()} = new JsonArray();
+    init: public static com.google.gson.JsonArray ${var.getName()} = new com.google.gson.JsonArray();
     get: ${JavaModName}Variables.${name}
     set: ${JavaModName}Variables.${name} = ${value};
