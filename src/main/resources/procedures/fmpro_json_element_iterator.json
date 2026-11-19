@@ -1,0 +1,32 @@
+{
+  "args0": [
+    {
+      "type": "field_data_list_selector",
+      "name": "type",
+      "datalist": "fmpro_jsontypes",
+      "testValue": "String"
+    }
+  ],
+  "output": [
+    "String",
+    "Number",
+    "Logic",
+    "JsonObject",
+    "JsonArray"
+  ],
+  "inputsInline": true,
+  "colour": 310,
+  "mcreator": {
+    "group": "loops",
+    "toolbox_id": "fmpro_json",
+    "dependencies": [
+      {
+        "name": "fmprojsonelementiterator",
+        "type": "JsonElement"
+      }
+    ],
+    "fields": [
+      "type"
+    ]
+  }
+}

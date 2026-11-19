@@ -1,0 +1,22 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "path",
+      "check": "String"
+    }
+  ],
+  "output": "File",
+  "inputsInline": true,
+  "colour": 270,
+  "mcreator": {
+    "group": "root",
+    "toolbox_id": "fmpro_files",
+    "toolbox_init": [
+      "<value name=\"path\"><block type=\"text\"><field name=\"TEXT\">config/example.txt</field></block></value>"
+    ],
+    "inputs": [
+      "path"
+    ]
+  }
+}

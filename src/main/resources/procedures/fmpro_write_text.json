@@ -1,0 +1,30 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "file",
+      "check": "File"
+    },
+    {
+      "type": "input_value",
+      "name": "text",
+      "check": "String"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "inputsInline": true,
+  "colour": 270,
+  "mcreator": {
+    "group": "text",
+    "toolbox_id": "fmpro_files",
+    "toolbox_init": [
+      "<value name=\"file\"><block type=\"variables_get_File\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"text\"><block type=\"text\"><field name=\"TEXT\">Hello</field></block></value>"
+    ],
+    "inputs": [
+      "file",
+      "text"
+    ]
+  }
+}

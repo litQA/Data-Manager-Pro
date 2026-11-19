@@ -1,0 +1,22 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "path",
+      "check": "String"
+    }
+  ],
+  "output": "JsonObject",
+  "inputsInline": true,
+  "colour": 310,
+  "mcreator": {
+    "group": "read",
+    "toolbox_id": "fmpro_json",
+    "toolbox_init": [
+      "<value name=\"path\"><block type=\"text\"><field name=\"TEXT\">mymod:loot_table/example.json</field></block></value>"
+    ],
+    "inputs": [
+      "path"
+    ]
+  }
+}

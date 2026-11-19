@@ -1,0 +1,29 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "list",
+      "check": "List"
+    },
+    {
+      "type": "input_value",
+      "name": "element"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "inputsInline": true,
+  "colour": 40,
+  "mcreator": {
+    "group": "name",
+    "toolbox_init": [
+      "<value name=\"list\"><block type=\"variables_get_List\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"element\"><block type=\"text\"><field name=\"TEXT\">helloworld</field></block></value>"
+    ],
+    "toolbox_id": "fmpro_list",
+    "inputs": [
+      "list",
+      "element"
+    ]
+  }
+}

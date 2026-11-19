@@ -1,0 +1,22 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "map",
+      "check": "Map"
+    }
+  ],
+  "output": "Number",
+  "inputsInline": true,
+  "colour": "%{BKY_MATH_HUE}",
+  "mcreator": {
+    "group": "agetter",
+    "toolbox_init": [
+      "<value name=\"map\"><block type=\"variables_get_Map\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>"
+    ],
+    "toolbox_id": "fmpro_map",
+    "inputs": [
+      "map"
+    ]
+  }
+}

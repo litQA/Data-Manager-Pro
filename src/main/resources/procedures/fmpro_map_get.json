@@ -1,0 +1,49 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "map",
+      "check": "Map"
+    },
+    {
+      "type": "input_value",
+      "name": "map_key",
+      "check": "String"
+    },
+    {
+      "type": "field_data_list_selector",
+      "name": "type",
+      "datalist": "fmpro_supportedtypes",
+      "testValue": "String"
+    }
+  ],
+  "output": [
+    "String",
+    "Number",
+    "Entity",
+    "BlockState",
+    "Logic",
+    "Direction",
+    "DamageSource",
+    "ItemStack",
+    "List",
+    "Map"
+  ],
+  "inputsInline": true,
+  "colour": "45",
+  "mcreator": {
+    "group": "agetter",
+    "toolbox_init": [
+      "<value name=\"map\"><block type=\"variables_get_Map\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"map_key\"><block type=\"text\"><field name=\"TEXT\">Map key</field></block></value>"
+    ],
+    "toolbox_id": "fmpro_map",
+    "inputs": [
+      "map",
+      "map_key"
+    ],
+    "fields": [
+      "type"
+    ]
+  }
+}

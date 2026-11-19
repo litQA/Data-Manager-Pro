@@ -1,0 +1,29 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "json",
+      "check": "JsonArray"
+    },
+    {
+      "type": "input_value",
+      "name": "value"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "inputsInline": true,
+  "colour": 310,
+  "mcreator": {
+    "group": "array",
+    "toolbox_id": "fmpro_json",
+    "toolbox_init": [
+      "<value name=\"json\"><block type=\"variables_get_JsonArray\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"value\"><block type=\"text\"><field name=\"TEXT\">value</field></block></value>"
+    ],
+    "inputs": [
+      "json",
+      "value"
+    ]
+  }
+}

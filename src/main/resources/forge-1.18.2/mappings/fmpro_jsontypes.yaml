@@ -1,0 +1,15 @@
+Text:
+ - String
+ - "\"\""
+Number:
+ - Double
+ - "0.0"
+Logic:
+ - Boolean
+ - "false"
+JsonObject:
+ - JsonObject
+ - "new JsonObject()"
+JsonArray:
+ - JsonArray
+ - "new JsonArray()"

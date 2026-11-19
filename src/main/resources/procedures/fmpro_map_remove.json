@@ -1,0 +1,30 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "map_key",
+      "check": "String"
+    },
+    {
+      "type": "input_value",
+      "name": "map",
+      "check": "Map"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "inputsInline": true,
+  "colour": "45",
+  "mcreator": {
+    "group": "manager",
+    "toolbox_init": [
+      "<value name=\"map\"><block type=\"variables_get_Map\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"map_key\"><block type=\"text\"><field name=\"TEXT\">Map key</field></block></value>"
+    ],
+    "toolbox_id": "fmpro_map",
+    "inputs": [
+      "map_key",
+      "map"
+    ]
+  }
+}

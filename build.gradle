@@ -1,0 +1,17 @@
+plugins {
+    id 'base'
+}
+
+def pluginJson = new groovy.json.JsonSlurper().parse(file('src/main/resources/plugin.json'))
+version = pluginJson.info.version
+group = 'pro.filemanager'
+
+tasks.register('pluginZip', Zip) {
+    archiveFileName = 'file-manager-pro-2026.1.zip'
+    destinationDirectory = layout.buildDirectory.dir('distributions')
+    from('src/main/resources')
+}
+
+tasks.named('assemble') {
+    dependsOn 'pluginZip'
+}

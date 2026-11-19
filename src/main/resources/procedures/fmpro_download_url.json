@@ -1,0 +1,29 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "url",
+      "check": "String"
+    },
+    {
+      "type": "input_value",
+      "name": "file",
+      "check": "File"
+    }
+  ],
+  "output": "File",
+  "inputsInline": true,
+  "colour": 200,
+  "mcreator": {
+    "group": "network",
+    "toolbox_id": "fmpro_network",
+    "toolbox_init": [
+      "<value name=\"url\"><block type=\"text\"><field name=\"TEXT\">https://example.com/file.txt</field></block></value>",
+      "<value name=\"file\"><block type=\"variables_get_File\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>"
+    ],
+    "inputs": [
+      "url",
+      "file"
+    ]
+  }
+}

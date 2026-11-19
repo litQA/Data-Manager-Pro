@@ -1,0 +1,38 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "index",
+      "check": "Number"
+    },
+    {
+      "type": "input_value",
+      "name": "list",
+      "check": "List"
+    },
+    {
+      "type": "field_data_list_selector",
+      "name": "type",
+      "datalist": "fmpro_supportedtypes",
+      "testValue": "String"
+    }
+  ],
+  "output": "Boolean",
+  "inputsInline": true,
+  "colour": "%{BKY_LOGIC_HUE}",
+  "mcreator": {
+    "group": "bool",
+    "toolbox_init": [
+      "<value name=\"list\"><block type=\"variables_get_List\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"index\"><block type=\"math_number\"><field name=\"NUM\">0</field></block></value>"
+    ],
+    "toolbox_id": "fmpro_list",
+    "inputs": [
+      "index",
+      "list"
+    ],
+    "fields": [
+      "type"
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "folder",
+      "check": "File"
+    },
+    {
+      "type": "input_value",
+      "name": "_placeholder",
+      "check": "File"
+    },
+    {
+      "type": "input_statement",
+      "name": "foreach"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "inputsInline": true,
+  "colour": 270,
+  "extensions": [
+    "is_custom_loop"
+  ],
+  "mcreator": {
+    "group": "loops",
+    "toolbox_id": "fmpro_files",
+    "toolbox_init": [
+      "<value name=\"folder\"><block type=\"variables_get_File\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"_placeholder\"><block deletable=\"false\" movable=\"false\" enabled=\"false\" type=\"fmpro_file_iterator\"></block></value>"
+    ],
+    "inputs": [
+      "folder",
+      "_placeholder"
+    ],
+    "statements": [
+      {
+        "name": "foreach",
+        "provides": [
+          {
+            "name": "fmprofileiterator",
+            "type": "File"
+          }
+        ]
+      }
+    ]
+  }
+}

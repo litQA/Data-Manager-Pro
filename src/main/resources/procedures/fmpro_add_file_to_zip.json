@@ -1,0 +1,37 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "zip",
+      "check": "File"
+    },
+    {
+      "type": "input_value",
+      "name": "file",
+      "check": "File"
+    },
+    {
+      "type": "input_value",
+      "name": "entry",
+      "check": "String"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "inputsInline": true,
+  "colour": 120,
+  "mcreator": {
+    "group": "zip",
+    "toolbox_id": "fmpro_zip",
+    "toolbox_init": [
+      "<value name=\"zip\"><block type=\"variables_get_File\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"file\"><block type=\"variables_get_File\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"entry\"><block type=\"text\"><field name=\"TEXT\">folder/file.txt</field></block></value>"
+    ],
+    "inputs": [
+      "zip",
+      "file",
+      "entry"
+    ]
+  }
+}

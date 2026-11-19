@@ -1,0 +1,10 @@
+- Text
+- Number
+- Entity
+- BlockState
+- Logic
+- Direction
+- DamageSource
+- ItemStack
+- List
+- Map

@@ -1,0 +1,21 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "value"
+    }
+  ],
+  "output": "Logic",
+  "inputsInline": true,
+  "colour": 310,
+  "mcreator": {
+    "group": "checks",
+    "toolbox_id": "fmpro_json",
+    "toolbox_init": [
+      "<value name=\"value\"><block type=\"text\"><field name=\"TEXT\">value</field></block></value>"
+    ],
+    "inputs": [
+      "value"
+    ]
+  }
+}

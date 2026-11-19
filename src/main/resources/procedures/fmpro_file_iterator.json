@@ -1,0 +1,16 @@
+{
+  "args0": [],
+  "output": "File",
+  "inputsInline": true,
+  "colour": 270,
+  "mcreator": {
+    "group": "loops",
+    "toolbox_id": "fmpro_files",
+    "dependencies": [
+      {
+        "name": "fmprofileiterator",
+        "type": "File"
+      }
+    ]
+  }
+}
