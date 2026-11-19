@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.0.4-beta
+
+### Fixes
+- ZIP insertion derives its temporary file name from a fixed prefix, so archives with very short names are handled.
+
+### Known Limitations
+- Custom loot NBT is interpreted as legacy JSON NBT. Minecraft 1.20.6 and newer convert the values into the `CustomData` component; typed data components and component patches are not represented.
+- The custom loot condition count and item procedures require a running server. Integrated-server single-player worlds satisfy this requirement.
+- Data-pack reads use the current server resource manager. Cache entries are cleared when `/reload` replaces that manager.
+- Nested loops of the same family share fixed iterator names and shadow each other.
+- Custom loop iterators are visible blocks in the File and JSON categories; they are intended for use inside their matching loop.
+- The `JsonElement` variable type is an internal helper exposed by the JSON iteration procedures.
+- Fabric generators are not supported by this release.
+- MCreator 2026.3 is outside the support matrix of this release.
+
 ## 1.0.0.3-beta
 
 ### New Content

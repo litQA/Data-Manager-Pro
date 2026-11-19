@@ -283,7 +283,7 @@ private static void fmproAddFileToZip(java.io.File zip, java.io.File file, Strin
 	String entry = entryName == null || entryName.trim().isEmpty() ? file.getName() : entryName.trim().replace('\\', '/');
 	while (entry.startsWith("/")) entry = entry.substring(1);
 	try {
-		java.io.File temp = java.io.File.createTempFile(zip.getName(), ".tmp", parent);
+		java.io.File temp = java.io.File.createTempFile("fmpro-", ".tmp", parent);
 		try {
 			try (java.util.zip.ZipOutputStream output = new java.util.zip.ZipOutputStream(
 					java.nio.file.Files.newOutputStream(temp.toPath()))) {
