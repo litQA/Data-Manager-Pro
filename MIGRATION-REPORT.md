@@ -68,7 +68,7 @@ The item registry and effect registry calls also change across the matrix and ar
 - Nested loops of the same family share the fixed iterator names and shadow each other. Use nested loops of different families or restructure the procedure.
 - The `JsonElement` variable type is an internal helper used by JSON array iteration and is also listed among the variable types.
 - `mod folder file` resolves `mods` below the game directory. It does not inspect loader-specific mod directories.
-- The custom loot procedures require a block state and an entity. They do not support loot tables without these inputs.
+- Custom loot procedures require a block state and an entity. They declare a `blockstate` dependency and therefore appear in block-related procedures; they do not support loot tables without these inputs.
 - Fabric generators are not part of this release.
 - MCreator 2026.3 and later use a different generator set and are not supported by this build.
 

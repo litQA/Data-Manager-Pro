@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0.5-beta
+## 1.1.0.6-beta
 
 ### New Content
 - `JsonLootCache` variable type for one loaded loot folder, available in local and global session scopes.
@@ -9,6 +9,7 @@
 
 ### Changes
 - Custom loot block inputs use the `MCItemBlock` type, so provided block states and block selectors connect directly.
+- Custom loot procedures declare a `blockstate` dependency and are offered in block-related procedures, matching the provided-block-state default.
 - Exact-file loot procedures pass their block input through the standard block-state conversion.
 
 ### Fixes

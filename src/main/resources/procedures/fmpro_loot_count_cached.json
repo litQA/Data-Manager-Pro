@@ -27,6 +27,12 @@
       "<value name=\"type\"><block type=\"text\"><field name=\"TEXT\">block_break</field></block></value>",
       "<value name=\"cache\"><block type=\"variables_get_JsonLootCache\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>"
     ],
+    "dependencies": [
+      {
+        "name": "blockstate",
+        "type": "blockstate"
+      }
+    ],
     "inputs": [
       "block",
       "type",

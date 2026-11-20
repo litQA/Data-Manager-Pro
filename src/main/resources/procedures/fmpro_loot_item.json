@@ -39,6 +39,12 @@
       "<value name=\"path\"><block type=\"text\"><field name=\"TEXT\">mymod:loot/example.json</field></block></value>",
       "<value name=\"index\"><block type=\"math_number\"><field name=\"NUM\">1</field></block></value>"
     ],
+    "dependencies": [
+      {
+        "name": "blockstate",
+        "type": "blockstate"
+      }
+    ],
     "inputs": [
       "block",
       "entity",

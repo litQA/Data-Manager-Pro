@@ -63,7 +63,7 @@ Folder-cache procedures avoid repeated data-pack scans:
 
 Create one global session `JsonLootCache` variable per folder, for example `jsonLootCache`, and pass it to the loader and the cached procedures. Call the loader once when the server or world loads and again after `/reload`. The cache is not cleared automatically: leave the loader call out to keep the previous contents, or set its `force` input to true to rebuild.
 
-All loot procedures take a block input of MCreator's `MCItemBlock` type. A provided block state from a block-related procedure connects directly; a block selector can be used in other procedures.
+All loot procedures take a block input of MCreator's `MCItemBlock` type and declare a `blockstate` dependency. They are intended for block-related procedures, where a provided block state connects directly; replace the default block with another `MCItemBlock` provider when the procedure already supplies the block you need.
 
 Example data-pack file:
 

@@ -27,6 +27,12 @@
       "<value name=\"type\"><block type=\"text\"><field name=\"TEXT\">block_break</field></block></value>",
       "<value name=\"path\"><block type=\"text\"><field name=\"TEXT\">mymod:loot/example.json</field></block></value>"
     ],
+    "dependencies": [
+      {
+        "name": "blockstate",
+        "type": "blockstate"
+      }
+    ],
     "inputs": [
       "block",
       "type",
