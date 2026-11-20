@@ -1,0 +1,3 @@
+<#include "mcitems.ftl">
+<@addTemplate file="utils/fmpro/fmpro_loot.java.ftl"/>
+fmproLootItemCached(${input$cache}, ${mappedBlockToBlockStateCode(input$block)}, ${input$entity}, ${input$type}, ${opt.toInt(input$index)})

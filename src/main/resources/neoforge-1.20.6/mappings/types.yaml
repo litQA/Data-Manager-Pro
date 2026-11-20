@@ -2,5 +2,6 @@ File: java.io.File
 JsonObject: com.google.gson.JsonObject
 JsonArray: com.google.gson.JsonArray
 JsonElement: com.google.gson.JsonElement
+JsonLootCache: com.google.gson.JsonObject
 List: java.util.ArrayList<Object>
 Map: java.util.HashMap<String,Object>

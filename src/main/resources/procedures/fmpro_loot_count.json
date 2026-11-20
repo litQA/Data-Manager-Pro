@@ -3,7 +3,7 @@
     {
       "type": "input_value",
       "name": "block",
-      "check": "BlockState"
+      "check": "MCItemBlock"
     },
     {
       "type": "input_value",
@@ -23,7 +23,7 @@
     "group": "loot",
     "toolbox_id": "fmpro_loot",
     "toolbox_init": [
-      "<value name=\"block\"><block type=\"mcitem_allblocks\"><field name=\"value\"></field></block></value>",
+      "<value name=\"block\"><block type=\"blockstate_from_deps\"></block></value>",
       "<value name=\"type\"><block type=\"text\"><field name=\"TEXT\">block_break</field></block></value>",
       "<value name=\"path\"><block type=\"text\"><field name=\"TEXT\">mymod:loot/example.json</field></block></value>"
     ],

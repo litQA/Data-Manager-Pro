@@ -24,7 +24,7 @@ The wrapper uses the public Gradle distribution URL by default. If that download
 
 ## Variable Types
 
-The plugin registers `File`, `JsonObject`, `JsonArray`, `List`, `Map` and the internal `JsonElement` helper type. All types are available in local, global and session variable scopes.
+The plugin registers `File`, `JsonObject`, `JsonArray`, `List`, `Map`, `JsonLootCache` and the internal `JsonElement` helper type. All types are available in local and global session variable scopes.
 
 ## Procedure Categories
 
@@ -50,11 +50,20 @@ Typed list and map getters, iteration, index lookup, insertion, removal, reversa
 
 ### Custom Loot
 
-Three procedures read a data-pack JSON file:
+Exact-file procedures read one data-pack JSON file:
 
-- `Custom Loot Item`: block state, entity, type, path and one-based condition index.
-- `Custom Loot Condition Count`: block state, type and path.
-- `Custom Loot Item By ID`: block state, entity, type, path and condition ID.
+- `Custom Loot Item`: block, entity, type, path and one-based condition index.
+- `Custom Loot Condition Count`: block, type and path.
+- `Custom Loot Item By ID`: block, entity, type, path and condition ID.
+
+Folder-cache procedures avoid repeated data-pack scans:
+
+- `Load Loot Folder Into Cache` scans the direct `.json` children of a folder such as `mymod:loot/crop`, indexes each root by `type` and `target_block`, and stores the result in a `JsonLootCache`.
+- `Cached Loot Item`, `Cached Loot Condition Count` and `Cached Loot Item By ID` read that cache with the same condition semantics as the exact-file procedures.
+
+Create one global session `JsonLootCache` variable per folder, for example `jsonLootCache`, and pass it to the loader and the cached procedures. Call the loader once when the server or world loads and again after `/reload`. The cache is not cleared automatically: leave the loader call out to keep the previous contents, or set its `force` input to true to rebuild.
+
+All loot procedures take a block input of MCreator's `MCItemBlock` type. A provided block state from a block-related procedure connects directly; a block selector can be used in other procedures.
 
 Example data-pack file:
 
@@ -94,7 +103,8 @@ Accepted path forms are `data/<namespace>/<path>.json`, `<namespace>:<path>.json
 - File and URL operations are blocking and run on the calling thread.
 - Invalid files, missing permissions and JSON errors propagate as Java exceptions.
 - Custom loot falls back to an empty ItemStack or zero with a warning on standard error.
-- Client-side custom loot calls return immediately without reading the data pack.
+- The loot cache keeps its contents when a scan is skipped, fails or finds no matching files. Set the loader's `force` input to true to replace it, including with an empty result.
+- Client-side custom loot calls return immediately without reading the data pack or the cache.
 - Loot NBT is converted from JSON into legacy tag types. On 1.20.6 and newer the values are stored in the `CustomData` component.
 
 See `MIGRATION-REPORT.md` for known limitations and `CHANGELOG.md` for the change list.

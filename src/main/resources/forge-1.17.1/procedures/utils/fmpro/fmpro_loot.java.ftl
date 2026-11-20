@@ -18,8 +18,156 @@ private static com.google.gson.JsonObject fmproLootLoad(String path) {
 	return fmproLootCacheJson;
 }
 
+private static java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource>
+		fmproLootCacheScan(net.minecraft.server.packs.resources.ResourceManager manager, String namespace, String folderPath) {
+	return manager.listResources(folderPath, location -> {
+		if (!location.getNamespace().equals(namespace)) return false;
+		String prefix = folderPath + "/";
+		if (!location.getPath().startsWith(prefix)) return false;
+		String rest = location.getPath().substring(prefix.length());
+		return rest.endsWith(".json") && rest.indexOf('/') < 0;
+	});
+}
+
+private static com.google.gson.JsonObject fmproLootCacheRoot(com.google.gson.JsonObject cache,
+		net.minecraft.world.level.block.state.BlockState block, String expectedType) {
+	if (cache == null) {
+		fmproLootWarn("Loot cache is null");
+		return null;
+	}
+	if (!cache.has("__fmpro_type") || !cache.get("__fmpro_type").isJsonPrimitive()
+			|| !cache.get("__fmpro_type").getAsString().equals(expectedType)) {
+		fmproLootWarn("Loot cache was not loaded for type: " + expectedType);
+		return null;
+	}
+	if (!cache.has("entries") || !cache.get("entries").isJsonObject()) {
+		fmproLootWarn("Loot cache has no entries; run the loader block first");
+		return null;
+	}
+	if (block == null) {
+		fmproLootWarn("Loot cache block is null");
+		return null;
+	}
+	String actualBlock = String.valueOf(net.minecraftforge.registries.ForgeRegistries.BLOCKS.getKey(block.getBlock()));
+	com.google.gson.JsonObject root = cache.getAsJsonObject("entries").getAsJsonObject(expectedType + "|" + actualBlock);
+	if (root == null) {
+		fmproLootWarn("No cached loot for block " + actualBlock + " and type " + expectedType);
+		return null;
+	}
+	if (!root.has("target_block") || !root.get("target_block").isJsonPrimitive()
+			|| !root.get("target_block").getAsString().equals(actualBlock)) {
+		fmproLootWarn("Cached loot target_block does not match: " + actualBlock);
+		return null;
+	}
+	if (!root.has("conditions") || !root.get("conditions").isJsonArray()) {
+		fmproLootWarn("Cached loot has no conditions array: " + actualBlock);
+		return null;
+	}
+	return root;
+}
+
+private static void fmproLootCacheLoad(com.google.gson.JsonObject cache, String folder, String type, boolean force) {
+	if (cache == null) {
+		fmproLootWarn("Loot cache is null");
+		return;
+	}
+	String clean = folder == null ? "" : folder.replace('\\', '/').trim();
+	while (clean.startsWith("/")) clean = clean.substring(1);
+	while (clean.endsWith("/")) clean = clean.substring(0, clean.length() - 1);
+	if (clean.isEmpty() || type == null || type.trim().isEmpty()) {
+		fmproLootWarn("Loot cache folder and type are required");
+		return;
+	}
+	type = type.trim();
+	String namespace = "minecraft";
+	String path = clean;
+	boolean fromData = clean.startsWith("data/");
+	if (fromData) clean = clean.substring(5);
+	path = clean;
+	int colon = clean.indexOf(':');
+	if (colon >= 0) {
+		namespace = clean.substring(0, colon);
+		path = clean.substring(colon + 1);
+	} else if (fromData) {
+		int slash = clean.indexOf('/');
+		if (slash > 0) {
+			namespace = clean.substring(0, slash);
+			path = clean.substring(slash + 1);
+		}
+	}
+	while (path.startsWith("/")) path = path.substring(1);
+	while (path.endsWith("/")) path = path.substring(0, path.length() - 1);
+	if (namespace.isEmpty() || path.isEmpty()) {
+		fmproLootWarn("Loot cache folder path is invalid: " + folder);
+		return;
+	}
+	String folderKey = namespace + ":" + path;
+	String loadedType = cache.has("__fmpro_type") && cache.get("__fmpro_type").isJsonPrimitive()
+			? cache.get("__fmpro_type").getAsString() : null;
+	String loadedFolder = cache.has("__fmpro_folder") && cache.get("__fmpro_folder").isJsonPrimitive()
+			? cache.get("__fmpro_folder").getAsString() : null;
+	if (!force && cache.has("entries") && loadedType != null && loadedFolder != null) {
+		if (loadedType.equals(type) && loadedFolder.equals(folderKey)) return;
+		fmproLootWarn("Loot cache already contains " + loadedFolder + " (" + loadedType
+				+ "); call the loader with force=true to replace it");
+		return;
+	}
+	net.minecraft.server.MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+	if (server == null) {
+		fmproLootWarn("No server available for loot cache load: " + folderKey);
+		return;
+	}
+	try {
+		java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource> found =
+				fmproLootCacheScan(server.getResourceManager(), namespace, path);
+		java.util.List<net.minecraft.resources.ResourceLocation> keys = new java.util.ArrayList<>(found.keySet());
+		keys.sort(java.util.Comparator.comparing(net.minecraft.resources.ResourceLocation::toString));
+		com.google.gson.JsonObject entries = new com.google.gson.JsonObject();
+		for (net.minecraft.resources.ResourceLocation location : keys) {
+			try (java.io.InputStream stream = found.get(location).open()) {
+				com.google.gson.JsonElement parsed = com.google.gson.JsonParser.parseReader(
+						new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8));
+				if (parsed == null || !parsed.isJsonObject()) {
+					fmproLootWarn("Skipping malformed loot file: " + location);
+					continue;
+				}
+				com.google.gson.JsonObject root = parsed.getAsJsonObject();
+				if (!root.has("type") || !root.get("type").isJsonPrimitive()
+						|| !root.get("type").getAsString().equals(type)) continue;
+				if (!root.has("target_block") || !root.get("target_block").isJsonPrimitive()) {
+					fmproLootWarn("Skipping loot file without target_block: " + location);
+					continue;
+				}
+				String entryKey = type + "|" + root.get("target_block").getAsString();
+				if (entries.has(entryKey)) {
+					fmproLootWarn("Duplicate cached loot target_block " + root.get("target_block").getAsString()
+							+ " in " + location);
+					continue;
+				}
+				entries.add(entryKey, root);
+			} catch (Exception e) {
+				fmproLootWarn("Failed to read cached loot file " + location + ": " + e.getMessage());
+			}
+		}
+		if (entries.size() == 0) {
+			fmproLootWarn("No loot files found in " + folderKey + " for type " + type);
+			if (!force) return;
+		}
+		cache.addProperty("__fmpro_version", 1);
+		cache.addProperty("__fmpro_folder", folderKey);
+		cache.addProperty("__fmpro_type", type);
+		cache.add("entries", entries);
+	} catch (Exception e) {
+		fmproLootWarn("Failed to load loot cache from " + folderKey + ": " + e.getMessage());
+	}
+}
+
 private static com.google.gson.JsonObject fmproLootRoot(net.minecraft.world.level.block.state.BlockState block,
 		String expectedType, String path) {
+	if (block == null) {
+		fmproLootWarn("Loot block is null: " + path);
+		return null;
+	}
 	com.google.gson.JsonObject root = fmproLootLoad(path);
 	if (root == null || !root.has("type") || !root.get("type").isJsonPrimitive()
 			|| !root.get("type").getAsString().equals(expectedType)) {
@@ -236,55 +384,118 @@ private static net.minecraft.world.item.ItemStack fmproLootDrop(com.google.gson.
 	return stack;
 }
 
+private static net.minecraft.world.item.ItemStack fmproLootItemFromRoot(com.google.gson.JsonObject root,
+		net.minecraft.world.entity.Entity entity, int index, String label) {
+	if (root == null) return net.minecraft.world.item.ItemStack.EMPTY;
+	if (!root.has("conditions") || !root.get("conditions").isJsonArray()) {
+		fmproLootWarn("Loot file has no conditions array: " + label);
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+	com.google.gson.JsonArray conditions = root.getAsJsonArray("conditions");
+	int realIndex = index - 1;
+	if (realIndex < 0 || realIndex >= conditions.size()) {
+		fmproLootWarn("Loot condition index out of range: " + index + " in " + label);
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+	if (!conditions.get(realIndex).isJsonObject()) {
+		fmproLootWarn("Loot condition is not an object: " + index + " in " + label);
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+	com.google.gson.JsonObject condition = conditions.get(realIndex).getAsJsonObject();
+	return fmproLootPredicate(condition, entity) ? fmproLootDrop(condition, entity) : net.minecraft.world.item.ItemStack.EMPTY;
+}
+
 private static net.minecraft.world.item.ItemStack fmproLootItem(net.minecraft.world.level.block.state.BlockState block,
 		net.minecraft.world.entity.Entity entity, String type, String path, int index) {
 	if (entity == null || entity.getServer() == null) return net.minecraft.world.item.ItemStack.EMPTY;
 	try {
-		com.google.gson.JsonObject root = fmproLootRoot(block, type, path);
-		if (root == null) return net.minecraft.world.item.ItemStack.EMPTY;
-		com.google.gson.JsonArray conditions = root.getAsJsonArray("conditions");
-		int realIndex = index - 1;
-		if (realIndex < 0 || realIndex >= conditions.size()) {
-			fmproLootWarn("Loot condition index out of range: " + index + " in " + path);
-			return net.minecraft.world.item.ItemStack.EMPTY;
-		}
-		com.google.gson.JsonObject condition = conditions.get(realIndex).getAsJsonObject();
-		return fmproLootPredicate(condition, entity) ? fmproLootDrop(condition, entity) : net.minecraft.world.item.ItemStack.EMPTY;
+		return fmproLootItemFromRoot(fmproLootRoot(block, type, path), entity, index, path);
 	} catch (Exception e) {
 		fmproLootWarn("Failed to read custom loot: " + path + " (" + e.getMessage() + ")");
 		return net.minecraft.world.item.ItemStack.EMPTY;
 	}
 }
 
+private static double fmproLootCountFromRoot(com.google.gson.JsonObject root, String label) {
+	if (root == null) return 0;
+	if (!root.has("conditions") || !root.get("conditions").isJsonArray()) {
+		fmproLootWarn("Loot file has no conditions array: " + label);
+		return 0;
+	}
+	return root.getAsJsonArray("conditions").size();
+}
+
 private static double fmproLootCount(net.minecraft.world.level.block.state.BlockState block, String type, String path) {
 	if (ServerLifecycleHooks.getCurrentServer() == null) return 0;
 	try {
-		com.google.gson.JsonObject root = fmproLootRoot(block, type, path);
-		return root == null ? 0 : root.getAsJsonArray("conditions").size();
+		return fmproLootCountFromRoot(fmproLootRoot(block, type, path), path);
 	} catch (Exception e) {
 		fmproLootWarn("Failed to count custom loot conditions: " + path + " (" + e.getMessage() + ")");
 		return 0;
 	}
 }
 
+private static net.minecraft.world.item.ItemStack fmproLootItemByIdFromRoot(com.google.gson.JsonObject root,
+		net.minecraft.world.entity.Entity entity, String conditionId, String label) {
+	if (root == null) return net.minecraft.world.item.ItemStack.EMPTY;
+	if (!root.has("conditions") || !root.get("conditions").isJsonArray()) {
+		fmproLootWarn("Loot file has no conditions array: " + label);
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+	for (com.google.gson.JsonElement element : root.getAsJsonArray("conditions")) {
+		if (!element.isJsonObject()) continue;
+		com.google.gson.JsonObject condition = element.getAsJsonObject();
+		if (condition.has("condition_id") && condition.get("condition_id").isJsonPrimitive()
+				&& condition.get("condition_id").getAsString().equals(conditionId)) {
+			return fmproLootPredicate(condition, entity) ? fmproLootDrop(condition, entity) : net.minecraft.world.item.ItemStack.EMPTY;
+		}
+	}
+	fmproLootWarn("Loot condition ID not found: " + conditionId + " in " + label);
+	return net.minecraft.world.item.ItemStack.EMPTY;
+}
+
 private static net.minecraft.world.item.ItemStack fmproLootItemById(net.minecraft.world.level.block.state.BlockState block,
 		net.minecraft.world.entity.Entity entity, String type, String path, String conditionId) {
 	if (entity == null || entity.getServer() == null) return net.minecraft.world.item.ItemStack.EMPTY;
 	try {
-		com.google.gson.JsonObject root = fmproLootRoot(block, type, path);
-		if (root == null) return net.minecraft.world.item.ItemStack.EMPTY;
-		for (com.google.gson.JsonElement element : root.getAsJsonArray("conditions")) {
-			if (!element.isJsonObject()) continue;
-			com.google.gson.JsonObject condition = element.getAsJsonObject();
-			if (condition.has("condition_id") && condition.get("condition_id").isJsonPrimitive()
-					&& condition.get("condition_id").getAsString().equals(conditionId)) {
-				return fmproLootPredicate(condition, entity) ? fmproLootDrop(condition, entity) : net.minecraft.world.item.ItemStack.EMPTY;
-			}
-		}
-		fmproLootWarn("Loot condition ID not found: " + conditionId + " in " + path);
-		return net.minecraft.world.item.ItemStack.EMPTY;
+		return fmproLootItemByIdFromRoot(fmproLootRoot(block, type, path), entity, conditionId, path);
 	} catch (Exception e) {
 		fmproLootWarn("Failed to read custom loot by ID: " + path + " (" + e.getMessage() + ")");
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+}
+
+private static net.minecraft.world.item.ItemStack fmproLootItemCached(com.google.gson.JsonObject cache,
+		net.minecraft.world.level.block.state.BlockState block, net.minecraft.world.entity.Entity entity,
+		String type, int index) {
+	if (entity == null || entity.getServer() == null) return net.minecraft.world.item.ItemStack.EMPTY;
+	try {
+		return fmproLootItemFromRoot(fmproLootCacheRoot(cache, block, type), entity, index, "cache:" + type);
+	} catch (Exception e) {
+		fmproLootWarn("Failed to read cached custom loot: " + type + " (" + e.getMessage() + ")");
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+}
+
+private static double fmproLootCountCached(com.google.gson.JsonObject cache,
+		net.minecraft.world.level.block.state.BlockState block, String type) {
+	if (ServerLifecycleHooks.getCurrentServer() == null) return 0;
+	try {
+		return fmproLootCountFromRoot(fmproLootCacheRoot(cache, block, type), "cache:" + type);
+	} catch (Exception e) {
+		fmproLootWarn("Failed to count cached custom loot: " + type + " (" + e.getMessage() + ")");
+		return 0;
+	}
+}
+
+private static net.minecraft.world.item.ItemStack fmproLootItemByIdCached(com.google.gson.JsonObject cache,
+		net.minecraft.world.level.block.state.BlockState block, net.minecraft.world.entity.Entity entity,
+		String type, String conditionId) {
+	if (entity == null || entity.getServer() == null) return net.minecraft.world.item.ItemStack.EMPTY;
+	try {
+		return fmproLootItemByIdFromRoot(fmproLootCacheRoot(cache, block, type), entity, conditionId, "cache:" + type);
+	} catch (Exception e) {
+		fmproLootWarn("Failed to read cached custom loot by ID: " + type + " (" + e.getMessage() + ")");
 		return net.minecraft.world.item.ItemStack.EMPTY;
 	}
 }

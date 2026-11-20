@@ -1,0 +1,50 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "block",
+      "check": "MCItemBlock"
+    },
+    {
+      "type": "input_value",
+      "name": "entity",
+      "check": "Entity"
+    },
+    {
+      "type": "input_value",
+      "name": "type",
+      "check": "String"
+    },
+    {
+      "type": "input_value",
+      "name": "cache",
+      "check": "JsonLootCache"
+    },
+    {
+      "type": "input_value",
+      "name": "index",
+      "check": "Number"
+    }
+  ],
+  "output": "ItemStack",
+  "inputsInline": true,
+  "colour": 350,
+  "mcreator": {
+    "group": "cache",
+    "toolbox_id": "fmpro_loot",
+    "toolbox_init": [
+      "<value name=\"block\"><block type=\"blockstate_from_deps\"></block></value>",
+      "<value name=\"entity\"><block type=\"entity_from_deps\"></block></value>",
+      "<value name=\"type\"><block type=\"text\"><field name=\"TEXT\">block_break</field></block></value>",
+      "<value name=\"cache\"><block type=\"variables_get_JsonLootCache\"><mutation is_player_var=\"false\" has_entity=\"false\"></mutation><field name=\"VAR\"/></block></value>",
+      "<value name=\"index\"><block type=\"math_number\"><field name=\"NUM\">1</field></block></value>"
+    ],
+    "inputs": [
+      "block",
+      "entity",
+      "type",
+      "cache",
+      "index"
+    ]
+  }
+}

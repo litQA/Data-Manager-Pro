@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.1.0.5-beta
+
+### New Content
+- `JsonLootCache` variable type for one loaded loot folder, available in local and global session scopes.
+- `Load Loot Folder Into Cache` procedure that scans direct `.json` children of a data-pack folder, indexes roots by `type` and `target_block`, and keeps the first path when several files share a target.
+- `Cached Loot Item`, `Cached Loot Condition Count` and `Cached Loot Item By ID` procedures that read the loaded cache instead of a file path.
+
+### Changes
+- Custom loot block inputs use the `MCItemBlock` type, so provided block states and block selectors connect directly.
+- Exact-file loot procedures pass their block input through the standard block-state conversion.
+
+### Fixes
+- Loot block inputs no longer request a `BlockState` socket that no built-in provider offers.
+
+### Known Limitations
+- The loot cache does not expire automatically. Call the loader again after `/reload`, or set `force` to true, to rebuild it.
+- A cache describes one loot folder. Use separate cache variables for separate folders.
+- A failed or empty folder scan keeps the previous cache contents unless `force` is true.
+- The 1.17.1 folder scan uses `ResourceManager.listResources`; later generators enumerate data-pack resources through `PackResources`.
+
 ## 1.0.0.4-beta
 
 ### Fixes

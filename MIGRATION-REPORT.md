@@ -37,6 +37,10 @@ Data-pack paths are normalized by the helper before lookup. Accepted forms are `
 
 The custom loot cache stores the most recently parsed file and the resource-manager instance that produced it. A new resource manager is created by a data-pack reload, so the next call re-reads the file.
 
+Folder mode uses a separate `JsonLootCache` variable. The `Load Loot Folder Into Cache` procedure scans the direct `.json` children of one data-pack folder, reads each root, and stores roots in an `entries` object keyed by `type|target_block`. Paths are sorted before insertion, so when several files share a target the first path wins and later files are reported on standard error. The cache also records the folder and type that produced it.
+
+The loader is explicit. It does nothing when the same folder and type are already loaded, warns and keeps the previous cache when the metadata differs, and rebuilds when `force` is true. A failed or empty scan leaves the previous cache untouched unless `force` is true. The cache is never expired automatically: after `/reload` the user either calls the loader again or keeps the old cache intentionally. One cache describes one folder; separate folders need separate cache variables.
+
 ZIP operations are implemented with `java.util.zip`. Adding a file to an existing archive rewrites the archive through a temporary file so the central directory is not corrupted.
 
 ## Compatibility Notes
@@ -56,6 +60,10 @@ The item registry and effect registry calls also change across the matrix and ar
 - The `download url to file` procedure uses the platform URL connection defaults and does not expose connection or read timeouts.
 - Data-pack lookup is server-side only. Integrated-server single-player satisfies the server requirement; a dedicated client without a server returns the fallback value.
 - Data-pack cache invalidation follows the resource-manager instance. Reloads that reuse the same manager are not detected.
+- The folder loot cache has no automatic expiry. A procedure must call `Load Loot Folder Into Cache` after `/reload`, or pass `force` true, to rebuild it. Leaving the loader out deliberately keeps the previous contents.
+- One loot cache stores one folder and one procedure type. Use separate `JsonLootCache` variables for separate folders.
+- Folder scanning keeps direct `.json` children only; nested subfolders are ignored.
+- Folder scanning on Forge 1.17.1 uses `ResourceManager.listResources`; later generators use `PackResources` enumeration. The 1.17.1 path has not been compile-tested against a Minecraft installation in this workspace.
 - Folder iteration is not recursive. It yields direct children only, matching the requirement.
 - Nested loops of the same family share the fixed iterator names and shadow each other. Use nested loops of different families or restructure the procedure.
 - The `JsonElement` variable type is an internal helper used by JSON array iteration and is also listed among the variable types.
