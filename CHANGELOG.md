@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.0.11-beta
+
+### New Content
+- `Server Started (Integrated And Dedicated)` global trigger for running server-side setup on both singleplayer and dedicated servers.
+
+### Changes
+- The cache-loading workflow documentation now uses the new trigger instead of the dedicated-server-only `Server Load` trigger.
+
+### Fixes
+- Loot folder caches are populated in singleplayer because cache loading no longer depends on `FMLDedicatedServerSetupEvent`.
+
 ## 1.1.0.10-beta
 
 ### Fixes

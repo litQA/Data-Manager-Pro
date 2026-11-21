@@ -62,7 +62,7 @@ Folder-cache procedures avoid repeated data-pack scans:
 - `Load Loot Folder Into Cache` scans the direct `.json` children of a folder such as `mymod:loot/crop`, indexes each root by `type` and `target_block`, and stores the result in a `JsonLootCache`.
 - `Cached Loot Item`, `Cached Loot Drop Count`, `Cached Loot Item By ID` and `Cached Loot Item (First Match)` read that cache with the same condition semantics as the exact-file procedures.
 
-Create one global session `JsonLootCache` variable per folder, for example `jsonLootCache`, and pass it to the loader and the cached procedures. Call the loader once when the server or world loads and again after `/reload`. The cache is not cleared automatically: leave the loader call out to keep the previous contents, or set its `force` input to true to rebuild.
+Create one global session `JsonLootCache` variable per folder, for example `jsonLootCache`, and pass it to the loader and the cached procedures. Put the loader call in a procedure using the `Server Started (Integrated And Dedicated)` global trigger, then call it again after `/reload`. The built-in `Server Load` trigger is dedicated-server-only in MCreator 2026.1 and does not run in singleplayer. The cache is not cleared automatically: leave the loader call out to keep the previous contents, or set its `force` input to true to rebuild.
 
 All loot procedures take a block input of MCreator's `MCItemBlock` type and declare a `blockstate` dependency. They are intended for block-related procedures, where a provided block state connects directly; replace the default block with another `MCItemBlock` provider when the procedure already supplies the block you need.
 
