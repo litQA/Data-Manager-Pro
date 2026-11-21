@@ -155,7 +155,12 @@ private static com.google.gson.JsonObject fmproReadDatapackJson(String path) {
 	net.minecraft.resources.ResourceLocation rl = fmproRl(namespace + ":" + resourcePath);
 	java.util.Optional<net.minecraft.server.packs.resources.Resource> resource = server.getResourceManager().getResource(rl);
 	if (resource.isEmpty()) throw new IllegalArgumentException("Datapack file not found: " + path);
-	java.io.InputStream in = resource.get().open();
+	java.io.InputStream in;
+	try {
+		in = resource.get().open();
+	} catch (java.io.IOException e) {
+		throw new java.io.UncheckedIOException(e);
+	}
 	try (java.io.InputStream stream = in) {
 		com.google.gson.JsonElement element = com.google.gson.JsonParser.parseReader(
 				new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8));

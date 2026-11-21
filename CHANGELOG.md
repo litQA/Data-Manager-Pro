@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0.10-beta
+
+### Fixes
+- Datapack JSON reads on generators that return a resource handle now catch the checked stream-open failure, removing the `unreported exception IOException` compile error in generated procedures.
+
 ## 1.1.0.9-beta
 
 ### Changes
