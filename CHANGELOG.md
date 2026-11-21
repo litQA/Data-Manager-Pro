@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0.12-beta
+
+### Fixes
+- Looting modifiers now roll a random bonus from zero through the enchantment level instead of adding the full level. With base count 1 and Looting III, the result is 1-4, matching the vanilla distribution.
+
 ## 1.1.0.11-beta
 
 ### New Content

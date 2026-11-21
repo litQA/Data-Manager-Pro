@@ -355,13 +355,13 @@ private static net.minecraft.world.item.ItemStack fmproLootDrop(com.google.gson.
 			if ("looting".equalsIgnoreCase(function)) {
 				String enchant = value.has("enchant") ? value.get("enchant").getAsString() : "";
 				boolean includeOffhand = value.has("include_offhand") && value.get("include_offhand").getAsBoolean();
+				int level = 0;
 				if (entity instanceof net.minecraft.world.entity.LivingEntity) {
 					net.minecraft.world.entity.LivingEntity living = (net.minecraft.world.entity.LivingEntity) entity;
-					amount = fmproLootEnchant(living.getMainHandItem(), enchant);
-					if (includeOffhand) amount += fmproLootEnchant(living.getOffhandItem(), enchant);
-				} else {
-					amount = 0;
+					level = fmproLootEnchant(living.getMainHandItem(), enchant);
+					if (includeOffhand) level += fmproLootEnchant(living.getOffhandItem(), enchant);
 				}
+				amount = level <= 0 ? 0 : java.util.concurrent.ThreadLocalRandom.current().nextInt(level + 1);
 			} else {
 				double min = fmproLootValue(value.get("min"), entity);
 				double max = fmproLootValue(value.get("max"), entity);
