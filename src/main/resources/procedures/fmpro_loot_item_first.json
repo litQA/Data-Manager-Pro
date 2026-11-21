@@ -1,0 +1,49 @@
+{
+  "args0": [
+    {
+      "type": "input_value",
+      "name": "block",
+      "check": "MCItemBlock"
+    },
+    {
+      "type": "input_value",
+      "name": "entity",
+      "check": "Entity"
+    },
+    {
+      "type": "input_value",
+      "name": "type",
+      "check": "String"
+    },
+    {
+      "type": "input_value",
+      "name": "path",
+      "check": "String"
+    }
+  ],
+  "output": "ItemStack",
+  "inputsInline": true,
+  "colour": 350,
+  "mcreator": {
+    "group": "loot",
+    "toolbox_id": "fmpro_loot",
+    "toolbox_init": [
+      "<value name=\"block\"><block type=\"blockstate_from_deps\"></block></value>",
+      "<value name=\"entity\"><block type=\"entity_from_deps\"></block></value>",
+      "<value name=\"type\"><block type=\"text\"><field name=\"TEXT\">block_break</field></block></value>",
+      "<value name=\"path\"><block type=\"text\"><field name=\"TEXT\">mymod:loot/example.json</field></block></value>"
+    ],
+    "dependencies": [
+      {
+        "name": "blockstate",
+        "type": "blockstate"
+      }
+    ],
+    "inputs": [
+      "block",
+      "entity",
+      "type",
+      "path"
+    ]
+  }
+}

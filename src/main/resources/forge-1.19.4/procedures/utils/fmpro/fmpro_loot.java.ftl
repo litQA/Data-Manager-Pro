@@ -430,6 +430,32 @@ private static net.minecraft.world.item.ItemStack fmproLootItem(net.minecraft.wo
 	}
 }
 
+private static net.minecraft.world.item.ItemStack fmproLootItemFirstFromRoot(com.google.gson.JsonObject root,
+		net.minecraft.world.entity.Entity entity, String label) {
+	if (root == null) return net.minecraft.world.item.ItemStack.EMPTY;
+	if (!root.has("conditions") || !root.get("conditions").isJsonArray()) {
+		fmproLootWarn("Loot file has no conditions array: " + label);
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+	for (com.google.gson.JsonElement element : root.getAsJsonArray("conditions")) {
+		if (!element.isJsonObject()) continue;
+		com.google.gson.JsonObject condition = element.getAsJsonObject();
+		if (fmproLootPredicate(condition, entity)) return fmproLootDrop(condition, entity);
+	}
+	return net.minecraft.world.item.ItemStack.EMPTY;
+}
+
+private static net.minecraft.world.item.ItemStack fmproLootItemFirst(net.minecraft.world.level.block.state.BlockState block,
+		net.minecraft.world.entity.Entity entity, String type, String path) {
+	if (entity == null || entity.getServer() == null) return net.minecraft.world.item.ItemStack.EMPTY;
+	try {
+		return fmproLootItemFirstFromRoot(fmproLootRoot(block, type, path), entity, path);
+	} catch (Exception e) {
+		fmproLootWarn("Failed to read custom loot by first match: " + path + " (" + e.getMessage() + ")");
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+}
+
 private static double fmproLootCountFromRoot(com.google.gson.JsonObject root,
 		net.minecraft.world.entity.Entity entity, String label) {
 	if (root == null) return 0;
@@ -518,6 +544,18 @@ private static net.minecraft.world.item.ItemStack fmproLootItemByIdCached(com.go
 		return fmproLootItemByIdFromRoot(fmproLootCacheRoot(cache, block, type), entity, conditionId, "cache:" + type);
 	} catch (Exception e) {
 		fmproLootWarn("Failed to read cached custom loot by ID: " + type + " (" + e.getMessage() + ")");
+		return net.minecraft.world.item.ItemStack.EMPTY;
+	}
+}
+
+private static net.minecraft.world.item.ItemStack fmproLootItemFirstCached(com.google.gson.JsonObject cache,
+		net.minecraft.world.level.block.state.BlockState block, net.minecraft.world.entity.Entity entity,
+		String type) {
+	if (entity == null || entity.getServer() == null) return net.minecraft.world.item.ItemStack.EMPTY;
+	try {
+		return fmproLootItemFirstFromRoot(fmproLootCacheRoot(cache, block, type), entity, "cache:" + type);
+	} catch (Exception e) {
+		fmproLootWarn("Failed to read cached custom loot by first match: " + type + " (" + e.getMessage() + ")");
 		return net.minecraft.world.item.ItemStack.EMPTY;
 	}
 }

@@ -54,16 +54,19 @@ Exact-file procedures read one data-pack JSON file:
 
 - `Custom Loot Item`: block, entity, type, path and one-based condition index.
 - `Custom Loot Drop Count`: block, entity, type and path. Returns the final drop count of the first condition whose predicate matches the entity, or `0` when no condition matches.
-- `Custom Loot Item By ID`: block, entity, type, path and condition ID.
+- `Custom Loot Item By ID`: block, entity, type, path and condition ID. Returns air when the ID is absent or when the matching condition's predicate rejects the entity.
+- `Custom Loot Item (First Match)`: block, entity, type and path. Returns the drop of the first condition whose predicate matches the entity, or air when no condition matches.
 
 Folder-cache procedures avoid repeated data-pack scans:
 
 - `Load Loot Folder Into Cache` scans the direct `.json` children of a folder such as `mymod:loot/crop`, indexes each root by `type` and `target_block`, and stores the result in a `JsonLootCache`.
-- `Cached Loot Item`, `Cached Loot Drop Count` and `Cached Loot Item By ID` read that cache with the same condition semantics as the exact-file procedures.
+- `Cached Loot Item`, `Cached Loot Drop Count`, `Cached Loot Item By ID` and `Cached Loot Item (First Match)` read that cache with the same condition semantics as the exact-file procedures.
 
 Create one global session `JsonLootCache` variable per folder, for example `jsonLootCache`, and pass it to the loader and the cached procedures. Call the loader once when the server or world loads and again after `/reload`. The cache is not cleared automatically: leave the loader call out to keep the previous contents, or set its `force` input to true to rebuild.
 
 All loot procedures take a block input of MCreator's `MCItemBlock` type and declare a `blockstate` dependency. They are intended for block-related procedures, where a provided block state connects directly; replace the default block with another `MCItemBlock` provider when the procedure already supplies the block you need.
+
+Condition-ID procedures are predicate-checked. When the requested condition exists but the entity does not satisfy its predicate, the procedure returns air and does not fall through to another condition. First-match procedures scan in file order and return air when no condition matches; they stop at the first matching predicate even if its final drop count is zero.
 
 Example data-pack file:
 

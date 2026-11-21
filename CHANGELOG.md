@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.1.0.8-beta
+
+### New Content
+- `Custom Loot Item (First Match)` and `Cached Loot Item (First Match)` procedures that take an entity and a block but no condition ID, return the drop of the first condition whose predicate matches, and return air when nothing matches.
+
+### Changes
+- `Custom Loot Drop Count` and `Cached Loot Drop Count` use the blue number-block colour.
+
+### Known Limitations
+- Condition-ID procedures do not fall through to another condition when the selected condition exists but its predicate does not match the entity; they return air.
+- First-match procedures stop at the first matching predicate even when its final drop count is zero.
+
 ## 1.1.0.7-beta
 
 ### Changes
