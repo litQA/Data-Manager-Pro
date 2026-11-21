@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0.14-beta
+
+### Fixes
+- Loot item expressions now carry the `/*@ItemStack*/` type hint used by MCreator's `MCItem` conversion macros. Assigning a loot result to an `MCItem` variable no longer emits `new ItemStack(ItemStack)` and compiles on NeoForge 1.21.8.
+
 ## 1.1.0.13-beta
 
 ### Fixes
