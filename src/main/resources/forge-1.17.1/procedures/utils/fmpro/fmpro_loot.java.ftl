@@ -416,19 +416,27 @@ private static net.minecraft.world.item.ItemStack fmproLootItem(net.minecraft.wo
 	}
 }
 
-private static double fmproLootCountFromRoot(com.google.gson.JsonObject root, String label) {
+private static double fmproLootCountFromRoot(com.google.gson.JsonObject root,
+		net.minecraft.world.entity.Entity entity, String label) {
 	if (root == null) return 0;
 	if (!root.has("conditions") || !root.get("conditions").isJsonArray()) {
 		fmproLootWarn("Loot file has no conditions array: " + label);
 		return 0;
 	}
-	return root.getAsJsonArray("conditions").size();
+	for (com.google.gson.JsonElement element : root.getAsJsonArray("conditions")) {
+		if (!element.isJsonObject()) continue;
+		com.google.gson.JsonObject condition = element.getAsJsonObject();
+		if (fmproLootPredicate(condition, entity))
+			return fmproLootDrop(condition, entity).getCount();
+	}
+	return 0;
 }
 
-private static double fmproLootCount(net.minecraft.world.level.block.state.BlockState block, String type, String path) {
-	if (ServerLifecycleHooks.getCurrentServer() == null) return 0;
+private static double fmproLootCount(net.minecraft.world.level.block.state.BlockState block,
+		net.minecraft.world.entity.Entity entity, String type, String path) {
+	if (entity == null || entity.getServer() == null) return 0;
 	try {
-		return fmproLootCountFromRoot(fmproLootRoot(block, type, path), path);
+		return fmproLootCountFromRoot(fmproLootRoot(block, type, path), entity, path);
 	} catch (Exception e) {
 		fmproLootWarn("Failed to count custom loot conditions: " + path + " (" + e.getMessage() + ")");
 		return 0;
@@ -478,10 +486,10 @@ private static net.minecraft.world.item.ItemStack fmproLootItemCached(com.google
 }
 
 private static double fmproLootCountCached(com.google.gson.JsonObject cache,
-		net.minecraft.world.level.block.state.BlockState block, String type) {
-	if (ServerLifecycleHooks.getCurrentServer() == null) return 0;
+		net.minecraft.world.level.block.state.BlockState block, net.minecraft.world.entity.Entity entity, String type) {
+	if (entity == null || entity.getServer() == null) return 0;
 	try {
-		return fmproLootCountFromRoot(fmproLootCacheRoot(cache, block, type), "cache:" + type);
+		return fmproLootCountFromRoot(fmproLootCacheRoot(cache, block, type), entity, "cache:" + type);
 	} catch (Exception e) {
 		fmproLootWarn("Failed to count cached custom loot: " + type + " (" + e.getMessage() + ")");
 		return 0;

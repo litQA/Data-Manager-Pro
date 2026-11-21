@@ -62,6 +62,7 @@ The item registry and effect registry calls also change across the matrix and ar
 - Data-pack cache invalidation follows the resource-manager instance. Reloads that reuse the same manager are not detected.
 - The folder loot cache has no automatic expiry. A procedure must call `Load Loot Folder Into Cache` after `/reload`, or pass `force` true, to rebuild it. Leaving the loader out deliberately keeps the previous contents.
 - One loot cache stores one folder and one procedure type. Use separate `JsonLootCache` variables for separate folders.
+- The two condition-count procedures return the final drop count of the first condition whose predicate matches the entity. A matched condition with a zero-count drop does not fall through to later conditions, and the procedures return zero when no condition matches.
 - Folder scanning keeps direct `.json` children only; nested subfolders are ignored.
 - Folder scanning on Forge 1.17.1 uses `ResourceManager.listResources`; later generators use `PackResources` enumeration. The 1.17.1 path has not been compile-tested against a Minecraft installation in this workspace.
 - Folder iteration is not recursive. It yields direct children only, matching the requirement.

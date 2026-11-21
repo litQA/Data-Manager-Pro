@@ -53,13 +53,13 @@ Typed list and map getters, iteration, index lookup, insertion, removal, reversa
 Exact-file procedures read one data-pack JSON file:
 
 - `Custom Loot Item`: block, entity, type, path and one-based condition index.
-- `Custom Loot Condition Count`: block, type and path.
+- `Custom Loot Drop Count`: block, entity, type and path. Returns the final drop count of the first condition whose predicate matches the entity, or `0` when no condition matches.
 - `Custom Loot Item By ID`: block, entity, type, path and condition ID.
 
 Folder-cache procedures avoid repeated data-pack scans:
 
 - `Load Loot Folder Into Cache` scans the direct `.json` children of a folder such as `mymod:loot/crop`, indexes each root by `type` and `target_block`, and stores the result in a `JsonLootCache`.
-- `Cached Loot Item`, `Cached Loot Condition Count` and `Cached Loot Item By ID` read that cache with the same condition semantics as the exact-file procedures.
+- `Cached Loot Item`, `Cached Loot Drop Count` and `Cached Loot Item By ID` read that cache with the same condition semantics as the exact-file procedures.
 
 Create one global session `JsonLootCache` variable per folder, for example `jsonLootCache`, and pass it to the loader and the cached procedures. Call the loader once when the server or world loads and again after `/reload`. The cache is not cleared automatically: leave the loader call out to keep the previous contents, or set its `force` input to true to rebuild.
 

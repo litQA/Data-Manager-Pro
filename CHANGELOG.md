@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.0.7-beta
+
+### Changes
+- `Custom Loot Drop Count` and `Cached Loot Drop Count` now take an entity, evaluate condition predicates in file order, and return the final drop count of the first matching condition.
+
+### Fixes
+- Loader and cached loot procedures include the shared helper template, so generated code can resolve `fmproReadDatapackJson` and `fmproRl`.
+
+### Known Limitations
+- The count procedures return `0` when no condition matches the entity; they do not fall through to later conditions after a predicate match with a zero-count drop.
+
 ## 1.1.0.6-beta
 
 ### New Content
