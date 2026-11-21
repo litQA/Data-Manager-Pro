@@ -246,7 +246,7 @@ private static String fmproLootHandId(net.minecraft.world.entity.Entity entity, 
 private static double fmproLootEffect(net.minecraft.world.entity.Entity entity, String id, boolean amplifier) {
 	if (!(entity instanceof net.minecraft.world.entity.LivingEntity) || id == null) return amplifier ? -1 : 0;
 	net.minecraft.world.entity.LivingEntity living = (net.minecraft.world.entity.LivingEntity) entity;
-	net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect> effect = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.getHolder(net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.MOB_EFFECT, fmproRl(id))).orElse(null);
+	net.minecraft.core.Holder<net.minecraft.world.effect.MobEffect> effect = net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.get(fmproRl(id)).orElse(null);
 	if (effect == null) return amplifier ? -1 : 0;
 	if (!living.hasEffect(effect)) return amplifier ? -1 : 0;
 	return amplifier ? living.getEffect(effect).getAmplifier() : living.getEffect(effect).getDuration();

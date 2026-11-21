@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0.9-beta
+
+### Changes
+- The NeoForge 1.21.4 and 1.21.8 branches resolve potion effects through `Registry#get(ResourceLocation)`. The NeoForge 1.21.1 branch keeps `Registry#getHolder(ResourceKey)`.
+
+### Fixes
+- NeoForge 1.21.4 and 1.21.8 no longer emit `getHolder(ResourceKey)` for potion effects, removing the `cannot find symbol` compile error in generated procedures.
+
 ## 1.1.0.8-beta
 
 ### New Content
