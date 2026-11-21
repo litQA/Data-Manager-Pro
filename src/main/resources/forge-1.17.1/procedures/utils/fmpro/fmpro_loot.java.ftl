@@ -20,13 +20,21 @@ private static com.google.gson.JsonObject fmproLootLoad(String path) {
 
 private static java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource>
 		fmproLootCacheScan(net.minecraft.server.packs.resources.ResourceManager manager, String namespace, String folderPath) {
-	return manager.listResources(folderPath, location -> {
-		if (!location.getNamespace().equals(namespace)) return false;
+	java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource> found = new java.util.TreeMap<>(java.util.Comparator.comparing(net.minecraft.resources.ResourceLocation::toString));
+	for (net.minecraft.resources.ResourceLocation location : manager.listResources(folderPath, p -> p.endsWith(".json"))) {
+		if (!location.getNamespace().equals(namespace)) continue;
 		String prefix = folderPath + "/";
-		if (!location.getPath().startsWith(prefix)) return false;
+		if (!location.getPath().startsWith(prefix)) continue;
 		String rest = location.getPath().substring(prefix.length());
-		return rest.endsWith(".json") && rest.indexOf('/') < 0;
-	});
+		if (!rest.endsWith(".json") || rest.indexOf('/') >= 0) continue;
+		try {
+			net.minecraft.server.packs.resources.Resource resource = manager.getResource(location);
+			if (resource != null) found.put(location, resource);
+		} catch (java.io.IOException e) {
+			fmproLootWarn("Could not read loot resource " + location + ": " + e);
+		}
+	}
+	return found;
 }
 
 private static com.google.gson.JsonObject fmproLootCacheRoot(com.google.gson.JsonObject cache,

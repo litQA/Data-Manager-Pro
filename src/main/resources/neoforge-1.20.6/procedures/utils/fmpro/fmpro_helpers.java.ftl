@@ -129,7 +129,7 @@ private static void fmproWriteJson(java.io.File file, com.google.gson.JsonElemen
 private static net.minecraft.resources.ResourceLocation fmproRl(String id) {
 	String value = id == null ? "minecraft:air" : id.trim();
 	if (!value.contains(":")) value = "minecraft:" + value;
-	return net.minecraft.resources.ResourceLocation.parse(value);
+	return new net.minecraft.resources.ResourceLocation(value);
 }
 
 private static com.google.gson.JsonObject fmproReadDatapackJson(String path) {

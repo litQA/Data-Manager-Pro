@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.0.15-beta
+
+### Fixes
+- NeoForge 1.20.6 loot helpers now construct `ResourceLocation` with the version's public constructor and resolve potion effects as `Holder<MobEffect>`, matching the 1.20.5+ effect registry change.
+- Forge 1.18.2 now opens datapack resources through `ResourceManager.getResource(...).open()`, matching the Optional-based resource API used from 1.18.2 onward.
+- The Forge 1.17.1 loot folder scanner now uses the 1.17.1 `ResourceManager.listResources` contract (`Collection<ResourceLocation>` plus `getResource`) instead of the newer map-returning API.
+
 ## 1.1.0.14-beta
 
 ### Fixes
