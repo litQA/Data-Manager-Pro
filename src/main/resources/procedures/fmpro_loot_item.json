@@ -26,7 +26,7 @@
       "check": "Number"
     }
   ],
-  "output": "ItemStack",
+  "output": "MCItem",
   "inputsInline": true,
   "colour": 350,
   "mcreator": {

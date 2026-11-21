@@ -105,6 +105,7 @@ Accepted path forms are `data/<namespace>/<path>.json`, `<namespace>:<path>.json
 
 - File and URL operations are blocking and run on the calling thread.
 - Invalid files, missing permissions and JSON errors propagate as Java exceptions.
+- Loot item procedures use MCreator's standard `MCItem` output type and connect directly to item slots and other item-stack inputs.
 - A `looting` modifier adds a random integer from `0` through the effective enchantment level. With base count `1` and Looting III, the drop count is `1-4`.
 - Custom loot falls back to an empty ItemStack or zero with a warning on standard error.
 - The loot cache keeps its contents when a scan is skipped, fails or finds no matching files. Set the loader's `force` input to true to replace it, including with an empty result.

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0.13-beta
+
+### Fixes
+- Loot item procedures now expose the standard `MCItem` Blockly output type, so their sockets connect to item slots and other item-stack inputs instead of only accepting other loot sockets.
+
 ## 1.1.0.12-beta
 
 ### Fixes

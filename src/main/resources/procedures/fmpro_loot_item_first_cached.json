@@ -21,7 +21,7 @@
       "check": "JsonLootCache"
     }
   ],
-  "output": "ItemStack",
+  "output": "MCItem",
   "inputsInline": true,
   "colour": 350,
   "mcreator": {
