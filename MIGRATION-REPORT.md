@@ -61,7 +61,7 @@ The item registry and effect registry calls also change across the matrix and ar
 - Data-pack lookup is server-side only. Integrated-server single-player satisfies the server requirement; a dedicated client without a server returns the fallback value.
 - Data-pack cache invalidation follows the resource-manager instance. Reloads that reuse the same manager are not detected.
 - The folder loot cache has no automatic expiry. A procedure must call `Load Loot Folder Into Cache` after `/reload`, or pass `force` true, to rebuild it. Leaving the loader out deliberately keeps the previous contents.
-- The loader must run from the `Server Started (Integrated And Dedicated)` trigger, not the built-in `Server Load` trigger: the latter uses `FMLDedicatedServerSetupEvent` and never runs in singleplayer.
+- The loader must run from the `Server Started (Integrated And Dedicated)` trigger, not the built-in `Server Load` trigger: the latter uses `FMLDedicatedServerSetupEvent` and never runs in singleplayer. On Forge 1.17.1 this trigger uses `net.minecraftforge.fmlserverevents.FMLServerStartedEvent`; newer Forge versions use `net.minecraftforge.event.server.ServerStartedEvent`.
 - One loot cache stores one folder and one procedure type. Use separate `JsonLootCache` variables for separate folders.
 - The two condition-count procedures return the final drop count of the first condition whose predicate matches the entity. A matched condition with a zero-count drop does not fall through to later conditions, and the procedures return zero when no condition matches.
 - The condition-ID item procedures are predicate-checked. When the requested condition exists but the entity does not satisfy its predicate, the procedures return air and do not scan later conditions.

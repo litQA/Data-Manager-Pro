@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0.18-beta
+
+### Fixes
+- Forge 1.17.1 now receives the server-start trigger through `net.minecraftforge.fmlserverevents.FMLServerStartedEvent`. The newer `net.minecraftforge.event.server` package does not exist on that version.
+
 ## 1.1.0.17-beta
 
 ### Fixes
