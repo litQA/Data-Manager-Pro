@@ -47,6 +47,8 @@ ZIP operations are implemented with `java.util.zip`. Adding a file to an existin
 
 Minecraft 1.17.1 and 1.18.2 use `EnchantmentHelper.getItemEnchantmentLevel`; later Forge versions and NeoForge before 1.21.1 use `ItemStack.getEnchantmentLevel(Enchantment)`; NeoForge 1.21.1 and newer use enchantment holders. The generated helper is selected per generator, so these calls do not need to coexist in one source file.
 
+Forge 1.17.1 runs with Gson 2.8.0. Generated helpers therefore parse with `Gson.fromJson` and clear JSON objects through `entrySet()`, rather than the newer `JsonParser` statics and `JsonObject.keySet()`.
+
 Minecraft 1.20.6 and newer no longer expose item NBT as a direct `CompoundTag` field. The generated helper stores loot NBT in `CustomData`. Older generators use `ItemStack.setTag`.
 
 The item registry and effect registry calls also change across the matrix and are selected by generator family.

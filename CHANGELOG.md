@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0.19-beta
+
+### Fixes
+- JSON parsing now uses `Gson.fromJson` with `JsonElement`, which is available in the Gson 2.8.0 runtime shipped by Forge 1.17.1. The newer `JsonParser.parseString` and `JsonParser.parseReader` statics are not present there.
+- Clearing a JSON object now iterates `entrySet()` instead of the newer `JsonObject.keySet()` convenience method.
+
 ## 1.1.0.18-beta
 
 ### Fixes

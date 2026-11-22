@@ -139,8 +139,8 @@ private static void fmproLootCacheLoad(com.google.gson.JsonObject cache, String 
 		com.google.gson.JsonObject entries = new com.google.gson.JsonObject();
 		for (net.minecraft.resources.ResourceLocation location : keys) {
 			try (java.io.InputStream stream = found.get(location).open()) {
-				com.google.gson.JsonElement parsed = com.google.gson.JsonParser.parseReader(
-						new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8));
+				com.google.gson.JsonElement parsed = new com.google.gson.Gson().fromJson(
+						new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8), com.google.gson.JsonElement.class);
 				if (parsed == null || !parsed.isJsonObject()) {
 					fmproLootWarn("Skipping malformed loot file: " + location);
 					continue;
