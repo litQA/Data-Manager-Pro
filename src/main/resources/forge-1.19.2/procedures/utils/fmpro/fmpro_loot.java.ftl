@@ -20,25 +20,18 @@ private static com.google.gson.JsonObject fmproLootLoad(String path) {
 
 private static java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource>
 		fmproLootCacheScan(net.minecraft.server.packs.resources.ResourceManager manager, String namespace, String folderPath) {
-	java.util.Set<net.minecraft.resources.ResourceLocation> locations = new java.util.HashSet<>();
-	class Output implements PackResources.ResourceOutput {
-		public void accept(net.minecraft.resources.ResourceLocation location, IoSupplier<java.io.InputStream> supplier) {
-			if (!location.getNamespace().equals(namespace)) return;
-			String prefix = folderPath + "/";
-			if (!location.getPath().startsWith(prefix)) return;
-			String rest = location.getPath().substring(prefix.length());
-			if (rest.endsWith(".json") && rest.indexOf('/') < 0) locations.add(location);
-		}
-	}
-	manager.listPacks().forEach(pack -> {
-		for (String ns : pack.getNamespaces(PackType.SERVER_DATA)) {
-			pack.listResources(PackType.SERVER_DATA, ns, folderPath, new Output());
-		}
-	});
+	String prefix = folderPath + "/";
 	java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource> found =
 			new java.util.TreeMap<>(java.util.Comparator.comparing(net.minecraft.resources.ResourceLocation::toString));
-	for (net.minecraft.resources.ResourceLocation location : locations) {
-		manager.getResource(location).ifPresent(resource -> found.put(location, resource));
+	try {
+		java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource> resources =
+				manager.listResources(folderPath, location -> location.getNamespace().equals(namespace)
+						&& location.getPath().startsWith(prefix)
+						&& location.getPath().endsWith(".json")
+						&& location.getPath().substring(prefix.length()).indexOf('/') < 0);
+		found.putAll(resources);
+	} catch (Exception e) {
+		fmproLootWarn("Could not scan loot folder " + namespace + ":" + folderPath + ": " + e.getMessage());
 	}
 	return found;
 }

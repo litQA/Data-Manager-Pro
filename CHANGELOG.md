@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0.16-beta
+
+### Fixes
+- Forge 1.19.2 loot folder scanning now uses the 1.19.2 `ResourceManager.listResources(...)` map API, because that version's `PackResources` has no `ResourceOutput` callback type.
+
 ## 1.1.0.15-beta
 
 ### Fixes
