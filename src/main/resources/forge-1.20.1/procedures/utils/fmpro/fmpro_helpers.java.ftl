@@ -1,5 +1,5 @@
 private static java.io.File fmproGameRoot() {
-	return FMLPaths.GAMEDIR.get().toFile();
+	return net.minecraftforge.fml.loading.FMLPaths.GAMEDIR.get().toFile();
 }
 
 private static java.io.File fmproFile(String path) {
@@ -97,7 +97,7 @@ private static String fmproParentPath(java.io.File file) {
 private static com.google.gson.JsonObject fmproReadJsonObject(java.io.File file) {
 	try {
 		String raw = new String(java.nio.file.Files.readAllBytes(file.toPath()), java.nio.charset.StandardCharsets.UTF_8);
-		return com.google.gson.JsonParser.parseString(raw).getAsJsonObject();
+		return new com.google.gson.Gson().fromJson(raw, com.google.gson.JsonElement.class).getAsJsonObject();
 	} catch (java.io.IOException e) {
 		throw new java.io.UncheckedIOException(e);
 	}
@@ -106,7 +106,7 @@ private static com.google.gson.JsonObject fmproReadJsonObject(java.io.File file)
 private static com.google.gson.JsonArray fmproReadJsonArray(java.io.File file) {
 	try {
 		String raw = new String(java.nio.file.Files.readAllBytes(file.toPath()), java.nio.charset.StandardCharsets.UTF_8);
-		return com.google.gson.JsonParser.parseString(raw).getAsJsonArray();
+		return new com.google.gson.Gson().fromJson(raw, com.google.gson.JsonElement.class).getAsJsonArray();
 	} catch (java.io.IOException e) {
 		throw new java.io.UncheckedIOException(e);
 	}
@@ -150,7 +150,7 @@ private static com.google.gson.JsonObject fmproReadDatapackJson(String path) {
 			resourcePath = clean.substring(slash + 1);
 		}
 	}
-	net.minecraft.server.MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+	net.minecraft.server.MinecraftServer server = net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
 	if (server == null) throw new IllegalStateException("No server available for datapack read: " + path);
 	net.minecraft.resources.ResourceLocation rl = fmproRl(namespace + ":" + resourcePath);
 	java.util.Optional<net.minecraft.server.packs.resources.Resource> resource = server.getResourceManager().getResource(rl);
@@ -162,8 +162,8 @@ private static com.google.gson.JsonObject fmproReadDatapackJson(String path) {
 		throw new java.io.UncheckedIOException(e);
 	}
 	try (java.io.InputStream stream = in) {
-		com.google.gson.JsonElement element = com.google.gson.JsonParser.parseReader(
-				new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8));
+		com.google.gson.JsonElement element = new com.google.gson.Gson().fromJson(
+				new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8), com.google.gson.JsonElement.class);
 		return element.getAsJsonObject();
 	} catch (java.io.IOException e) {
 		throw new java.io.UncheckedIOException(e);
@@ -217,7 +217,8 @@ private static void fmproJsonArrayClear(com.google.gson.JsonArray array) {
 }
 
 private static void fmproJsonObjectClear(com.google.gson.JsonObject object) {
-	java.util.List<String> keys = new java.util.ArrayList<>(object.keySet());
+	java.util.List<String> keys = new java.util.ArrayList<>();
+	for (java.util.Map.Entry<String, com.google.gson.JsonElement> entry : object.entrySet()) keys.add(entry.getKey());
 	for (String key : keys) object.remove(key);
 }
 

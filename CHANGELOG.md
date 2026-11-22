@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.2.0.18-beta
+
+### New Content
+- MCreator 2026.3 EAP support with Forge 1.20.1, 1.20.4, 1.21.1 and 26.3; NeoForge 1.21.1, 1.21.4, 1.21.8, 26.1.2, 26.2 and 26.3; Fabric 1.20.1, 1.21.1, 1.21.8, 1.21.11, 26.1.2, 26.2 and 26.3.
+- Fabric support for the file, JSON, collection and custom-loot procedures.
+- A generated Fabric server holder that captures the server through the Fabric lifecycle events.
+- The 2026.3 server-start trigger uses the loader-specific event API on Forge, NeoForge and Fabric.
+
+### Changes
+- `plugin.json` now targets MCreator 2026.3 EAP and reports version `1.2.0.18-beta`.
+- The archive, documentation and generator directories now use the 2026.3 names and the `file-manager-pro-2026.3.zip` archive name.
+- The 1.21.11 and 26.x templates use `Identifier` and `entity.level().getServer()` instead of the removed `ResourceLocation` and `Entity.getServer()` APIs.
+- Fabric helper templates fully qualify the pack resource output, supplier and pack type names.
+- Fabric enchantment checks use `EnchantmentHelper` on 1.20.1 and the enchantment-component map on 1.21.1 and newer.
+- The obsolete 1.17.1, 1.18.2, 1.19.2, 1.19.4 and 1.20.6 generator directories were removed from the release.
+
+### Fixes
+- JSON object clear operations collect their keys through `entrySet()`, so the generated code does not depend on the mutability of a `keySet()` view.
+- Fabric helper/loot templates compile without implicit nested-class imports from an aggregate Fabric API jar.
+- The 1.21.11 and 26.x resource identifier calls no longer reference the removed `ResourceLocation` type.
+
+### Known Limitations
+- Fabric server-dependent data-pack and loot procedures require the generated procedure loader to run. A mod with no external-trigger procedure does not initialize the server holder.
+- No Minecraft 26.3 merged jar was available for bytecode validation; the 26.3 templates were checked against the 26.3 generator sources and compiled against the 26.2 API jar.
+
 ## 1.1.0.17-beta
 
 ### Fixes

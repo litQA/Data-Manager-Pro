@@ -7,7 +7,7 @@ version = pluginJson.info.version
 group = 'pro.filemanager'
 
 tasks.register('pluginZip', Zip) {
-    archiveFileName = 'file-manager-pro-2026.1.zip'
+    archiveFileName = 'file-manager-pro-2026.3.zip'
     destinationDirectory = layout.buildDirectory.dir('distributions')
     from('src/main/resources')
 }

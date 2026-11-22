@@ -1,14 +1,15 @@
 {
   "id": "file-manager-pro",
   "supportedversions": [
-    2026001
+    202600344621,
+    2026003
   ],
-  "weight": 0,
+  "weight": 3001,
   "info": {
     "name": "File Manager Pro",
     "description": "Datapack loot conditions, files, JSON, ZIP, URL, lists and maps for procedures",
     "author": "LitQA",
     "credits": "Thanks to Moegirl Deepseek for assistance",
-    "version": "1.1.0.17-beta"
+    "version": "1.2.0.18-beta"
   }
 }

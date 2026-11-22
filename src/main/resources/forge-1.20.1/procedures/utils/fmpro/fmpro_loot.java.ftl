@@ -7,7 +7,7 @@ private static void fmproLootWarn(String message) {
 }
 
 private static com.google.gson.JsonObject fmproLootLoad(String path) {
-	net.minecraft.server.MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+	net.minecraft.server.MinecraftServer server = net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
 	if (server == null) throw new IllegalStateException("No server available for custom loot read: " + path);
 	Object manager = server.getResourceManager();
 	if (manager != fmproLootCacheManager || !java.util.Objects.equals(path, fmproLootCachePath)) {
@@ -21,8 +21,8 @@ private static com.google.gson.JsonObject fmproLootLoad(String path) {
 private static java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource>
 		fmproLootCacheScan(net.minecraft.server.packs.resources.ResourceManager manager, String namespace, String folderPath) {
 	java.util.Set<net.minecraft.resources.ResourceLocation> locations = new java.util.HashSet<>();
-	class Output implements PackResources.ResourceOutput {
-		public void accept(net.minecraft.resources.ResourceLocation location, IoSupplier<java.io.InputStream> supplier) {
+	class Output implements net.minecraft.server.packs.PackResources.ResourceOutput {
+		public void accept(net.minecraft.resources.ResourceLocation location, net.minecraft.server.packs.resources.IoSupplier<java.io.InputStream> supplier) {
 			if (!location.getNamespace().equals(namespace)) return;
 			String prefix = folderPath + "/";
 			if (!location.getPath().startsWith(prefix)) return;
@@ -31,8 +31,8 @@ private static java.util.Map<net.minecraft.resources.ResourceLocation, net.minec
 		}
 	}
 	manager.listPacks().forEach(pack -> {
-		for (String ns : pack.getNamespaces(PackType.SERVER_DATA)) {
-			pack.listResources(PackType.SERVER_DATA, ns, folderPath, new Output());
+		for (String ns : pack.getNamespaces(net.minecraft.server.packs.PackType.SERVER_DATA)) {
+			pack.listResources(net.minecraft.server.packs.PackType.SERVER_DATA, ns, folderPath, new Output());
 		}
 	});
 	java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource> found =
@@ -126,7 +126,7 @@ private static void fmproLootCacheLoad(com.google.gson.JsonObject cache, String 
 				+ "); call the loader with force=true to replace it");
 		return;
 	}
-	net.minecraft.server.MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+	net.minecraft.server.MinecraftServer server = net.minecraftforge.server.ServerLifecycleHooks.getCurrentServer();
 	if (server == null) {
 		fmproLootWarn("No server available for loot cache load: " + folderKey);
 		return;
@@ -139,8 +139,8 @@ private static void fmproLootCacheLoad(com.google.gson.JsonObject cache, String 
 		com.google.gson.JsonObject entries = new com.google.gson.JsonObject();
 		for (net.minecraft.resources.ResourceLocation location : keys) {
 			try (java.io.InputStream stream = found.get(location).open()) {
-				com.google.gson.JsonElement parsed = com.google.gson.JsonParser.parseReader(
-						new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8));
+				com.google.gson.JsonElement parsed = new com.google.gson.Gson().fromJson(
+						new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8), com.google.gson.JsonElement.class);
 				if (parsed == null || !parsed.isJsonObject()) {
 					fmproLootWarn("Skipping malformed loot file: " + location);
 					continue;

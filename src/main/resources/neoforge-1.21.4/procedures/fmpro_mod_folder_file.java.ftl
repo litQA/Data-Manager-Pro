@@ -1,1 +1,1 @@
-new java.io.File(FMLPaths.GAMEDIR.get().toFile(), "mods")
+new java.io.File(net.neoforged.fml.loading.FMLPaths.GAMEDIR.get().toFile(), "mods")

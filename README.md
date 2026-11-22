@@ -1,14 +1,18 @@
 # File Manager Pro
 
-File Manager Pro adds file, JSON, ZIP, URL, collection and custom-loot procedures to MCreator 2026.1.
+File Manager Pro adds file, JSON, ZIP, URL, collection and custom-loot procedures to MCreator 2026.3 EAP.
 
 ## Requirements
 
-- MCreator 2026.1 with Java plugins support
+- MCreator 2026.3 EAP with resource plugin support
 - Java 21
 - Gradle 9.9.1 when building the plugin from source
 
-Supported generators: Forge 1.17.1, 1.18.2, 1.19.2, 1.19.4 and 1.20.1; NeoForge 1.20.1, 1.20.4, 1.20.6, 1.21.1, 1.21.4 and 1.21.8. Fabric is not supported.
+Supported generators:
+
+- Forge 1.20.1, 1.20.4, 1.21.1 and 26.3
+- NeoForge 1.21.1, 1.21.4, 1.21.8, 26.1.2, 26.2 and 26.3
+- Fabric 1.20.1, 1.21.1, 1.21.8, 1.21.11, 26.1.2, 26.2 and 26.3
 
 ## Installation
 
@@ -18,9 +22,9 @@ Build the plugin archive:
 gradlew.bat pluginZip
 ```
 
-The archive is written to `build/distributions/file-manager-pro-2026.1.zip`. Place the archive in the MCreator plugins directory and restart MCreator with Java plugins enabled.
+The archive is written to `build/distributions/file-manager-pro-2026.3.zip`. Place the archive in the MCreator plugins directory and restart MCreator with resource plugins enabled.
 
-The wrapper uses the public Gradle distribution URL by default. If that download fails, run `scripts/use-local-gradle.ps1` once; it resolves the workspace root from its own location, verifies `reference_resources/gradle-9.9.1-bin.zip`, and switches the wrapper to that local archive. Restore the public URL afterwards with `git checkout -- gradle/wrapper/gradle-wrapper.properties`.
+The wrapper uses the public Gradle distribution URL by default. If that download fails, run `scripts/use-local-gradle.ps1` once; it resolves the workspace root from its own location, verifies the local Gradle archive, and switches the wrapper to that archive. Restore the public URL afterwards with `git checkout -- gradle/wrapper/gradle-wrapper.properties`.
 
 ## Variable Types
 
@@ -62,7 +66,7 @@ Folder-cache procedures avoid repeated data-pack scans:
 - `Load Loot Folder Into Cache` scans the direct `.json` children of a folder such as `mymod:loot/crop`, indexes each root by `type` and `target_block`, and stores the result in a `JsonLootCache`.
 - `Cached Loot Item`, `Cached Loot Drop Count`, `Cached Loot Item By ID` and `Cached Loot Item (First Match)` read that cache with the same condition semantics as the exact-file procedures.
 
-Create one global session `JsonLootCache` variable per folder, for example `jsonLootCache`, and pass it to the loader and the cached procedures. Put the loader call in a procedure using the `Server Started (Integrated And Dedicated)` global trigger, then call it again after `/reload`. The built-in `Server Load` trigger is dedicated-server-only in MCreator 2026.1 and does not run in singleplayer. The cache is not cleared automatically: leave the loader call out to keep the previous contents, or set its `force` input to true to rebuild.
+Create one global session `JsonLootCache` variable per folder, for example `jsonLootCache`, and pass it to the loader and the cached procedures. Put the loader call in a procedure using the `Server Started (Integrated And Dedicated)` global trigger, then call it again after `/reload`. The built-in `Server Load` trigger is dedicated-server-only and does not run in singleplayer. The cache is not cleared automatically: leave the loader call out to keep the previous contents, or set its `force` input to true to rebuild.
 
 All loot procedures take a block input of MCreator's `MCItemBlock` type and declare a `blockstate` dependency. They are intended for block-related procedures, where a provided block state connects directly; replace the default block with another `MCItemBlock` provider when the procedure already supplies the block you need.
 
@@ -111,5 +115,6 @@ Accepted path forms are `data/<namespace>/<path>.json`, `<namespace>:<path>.json
 - The loot cache keeps its contents when a scan is skipped, fails or finds no matching files. Set the loader's `force` input to true to replace it, including with an empty result.
 - Client-side custom loot calls return immediately without reading the data pack or the cache.
 - Loot NBT is converted from JSON into legacy tag types. On 1.20.6 and newer the values are stored in the `CustomData` component.
+- Fabric has no global current-server API. Server-dependent data-pack and loot lookups use a holder initialized by the generated procedure loader; this requires at least one external-trigger procedure in the mod.
 
 See `MIGRATION-REPORT.md` for known limitations and `CHANGELOG.md` for the change list.

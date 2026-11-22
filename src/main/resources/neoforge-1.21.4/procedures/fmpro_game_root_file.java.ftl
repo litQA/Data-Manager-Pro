@@ -1,1 +1,1 @@
-FMLPaths.GAMEDIR.get().toFile()
+net.neoforged.fml.loading.FMLPaths.GAMEDIR.get().toFile()

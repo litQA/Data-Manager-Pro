@@ -1,0 +1,3 @@
+base_templates:
+  - template: fmpro/fmpro_server_holder.java.ftl
+    name: "@SRCROOT/@BASEPACKAGEPATH/fmpro/FmproServerHolder.java"

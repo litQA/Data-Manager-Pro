@@ -1,5 +1,6 @@
 <#include "procedures.java.ftl">
-@EventBusSubscriber public class ${name}Procedure {
-	@SubscribeEvent public static void onServerStarted(net.neoforged.neoforge.event.server.ServerStartedEvent event) {
+@net.neoforged.fml.common.EventBusSubscriber public class ${name}Procedure {
+	@net.neoforged.bus.api.SubscribeEvent public static void onServerStarted(net.neoforged.neoforge.event.server.ServerStartedEvent event) {
 		execute();
 	}
+}
