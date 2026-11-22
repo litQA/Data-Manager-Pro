@@ -132,7 +132,7 @@ private static void fmproLootCacheLoad(com.google.gson.JsonObject cache, String 
 		keys.sort(java.util.Comparator.comparing(net.minecraft.resources.ResourceLocation::toString));
 		com.google.gson.JsonObject entries = new com.google.gson.JsonObject();
 		for (net.minecraft.resources.ResourceLocation location : keys) {
-			try (java.io.InputStream stream = found.get(location).open()) {
+			try (java.io.InputStream stream = found.get(location).getInputStream()) {
 				com.google.gson.JsonElement parsed = com.google.gson.JsonParser.parseReader(
 						new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8));
 				if (parsed == null || !parsed.isJsonObject()) {

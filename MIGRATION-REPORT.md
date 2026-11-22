@@ -67,7 +67,7 @@ The item registry and effect registry calls also change across the matrix and ar
 - The condition-ID item procedures are predicate-checked. When the requested condition exists but the entity does not satisfy its predicate, the procedures return air and do not scan later conditions.
 - The first-match item procedures return air when no condition matches and stop at the first matching predicate even when its final drop count is zero.
 - Folder scanning keeps direct `.json` children only; nested subfolders are ignored.
-- Folder scanning on Forge 1.17.1 and 1.19.2 uses `ResourceManager.listResources`; 1.18.2 and 1.19.4+ use `PackResources` enumeration. The 1.17.1 and 1.19.2 paths use different return types and are kept as separate generated variants.
+- Folder scanning on Forge 1.17.1, 1.18.2 and 1.19.2 uses `ResourceManager.listResources`; 1.19.4+ uses `PackResources` enumeration. The pre-1.19 paths expose `Collection<ResourceLocation>` and `Resource.getInputStream()`, while 1.19.2 exposes `Map<ResourceLocation, Resource>` and `Resource.open()`.
 - Folder iteration is not recursive. It yields direct children only, matching the requirement.
 - Nested loops of the same family share the fixed iterator names and shadow each other. Use nested loops of different families or restructure the procedure.
 - The `JsonElement` variable type is an internal helper used by JSON array iteration and is also listed among the variable types.

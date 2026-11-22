@@ -153,11 +153,11 @@ private static com.google.gson.JsonObject fmproReadDatapackJson(String path) {
 	net.minecraft.server.MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 	if (server == null) throw new IllegalStateException("No server available for datapack read: " + path);
 	net.minecraft.resources.ResourceLocation rl = fmproRl(namespace + ":" + resourcePath);
-	java.util.Optional<net.minecraft.server.packs.resources.Resource> resource = server.getResourceManager().getResource(rl);
-	if (resource.isEmpty()) throw new IllegalArgumentException("Datapack file not found: " + path);
 	java.io.InputStream in;
 	try {
-		in = resource.get().open();
+		net.minecraft.server.packs.resources.Resource resource = server.getResourceManager().getResource(rl);
+		if (resource == null) throw new java.io.FileNotFoundException("Datapack file not found: " + path);
+		in = resource.getInputStream();
 	} catch (java.io.IOException e) {
 		throw new java.io.UncheckedIOException(e);
 	}

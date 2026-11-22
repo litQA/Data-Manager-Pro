@@ -20,25 +20,19 @@ private static com.google.gson.JsonObject fmproLootLoad(String path) {
 
 private static java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource>
 		fmproLootCacheScan(net.minecraft.server.packs.resources.ResourceManager manager, String namespace, String folderPath) {
-	java.util.Set<net.minecraft.resources.ResourceLocation> locations = new java.util.HashSet<>();
-	class Output implements PackResources.ResourceOutput {
-		public void accept(net.minecraft.resources.ResourceLocation location, IoSupplier<java.io.InputStream> supplier) {
-			if (!location.getNamespace().equals(namespace)) return;
-			String prefix = folderPath + "/";
-			if (!location.getPath().startsWith(prefix)) return;
-			String rest = location.getPath().substring(prefix.length());
-			if (rest.endsWith(".json") && rest.indexOf('/') < 0) locations.add(location);
+	java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource> found = new java.util.TreeMap<>(java.util.Comparator.comparing(net.minecraft.resources.ResourceLocation::toString));
+	String prefix = folderPath + "/";
+	for (net.minecraft.resources.ResourceLocation location : manager.listResources(folderPath, p -> p.endsWith(".json"))) {
+		if (!location.getNamespace().equals(namespace)) continue;
+		if (!location.getPath().startsWith(prefix)) continue;
+		String rest = location.getPath().substring(prefix.length());
+		if (!rest.endsWith(".json") || rest.indexOf('/') >= 0) continue;
+		try {
+			net.minecraft.server.packs.resources.Resource resource = manager.getResource(location);
+			if (resource != null) found.put(location, resource);
+		} catch (java.io.IOException e) {
+			fmproLootWarn("Could not read loot resource " + location + ": " + e);
 		}
-	}
-	manager.listPacks().forEach(pack -> {
-		for (String ns : pack.getNamespaces(PackType.SERVER_DATA)) {
-			pack.listResources(PackType.SERVER_DATA, ns, folderPath, new Output());
-		}
-	});
-	java.util.Map<net.minecraft.resources.ResourceLocation, net.minecraft.server.packs.resources.Resource> found =
-			new java.util.TreeMap<>(java.util.Comparator.comparing(net.minecraft.resources.ResourceLocation::toString));
-	for (net.minecraft.resources.ResourceLocation location : locations) {
-		manager.getResource(location).ifPresent(resource -> found.put(location, resource));
 	}
 	return found;
 }
@@ -138,7 +132,7 @@ private static void fmproLootCacheLoad(com.google.gson.JsonObject cache, String 
 		keys.sort(java.util.Comparator.comparing(net.minecraft.resources.ResourceLocation::toString));
 		com.google.gson.JsonObject entries = new com.google.gson.JsonObject();
 		for (net.minecraft.resources.ResourceLocation location : keys) {
-			try (java.io.InputStream stream = found.get(location).open()) {
+			try (java.io.InputStream stream = found.get(location).getInputStream()) {
 				com.google.gson.JsonElement parsed = com.google.gson.JsonParser.parseReader(
 						new java.io.InputStreamReader(stream, java.nio.charset.StandardCharsets.UTF_8));
 				if (parsed == null || !parsed.isJsonObject()) {

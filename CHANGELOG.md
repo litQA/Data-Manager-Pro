@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0.17-beta
+
+### Fixes
+- Forge 1.18.2 loot helpers now use that version's resource API: `getResource` returns a `Resource`, `listResources` returns a `Collection<ResourceLocation>`, and streams are opened with `Resource.getInputStream()`.
+- Forge 1.17.1 datapack reads and cached loot streams now use `Resource.getInputStream()` as well, matching the same pre-1.19 resource contract.
+
 ## 1.1.0.16-beta
 
 ### Fixes
