@@ -3,4 +3,3 @@
 	@net.minecraftforge.eventbus.api.listener.SubscribeEvent public static void onServerStarted(net.minecraftforge.event.server.ServerStartedEvent event) {
 		execute();
 	}
-}

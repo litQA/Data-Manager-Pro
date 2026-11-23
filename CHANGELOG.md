@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.2.0.21-beta
+
+### Fixes
+- Forge and NeoForge server-start triggers no longer close the generated procedure class early. The loot helpers now stay inside the class body on every supported Forge and NeoForge version.
+
 ## 1.2.0.20-beta
 
 ### Fixes

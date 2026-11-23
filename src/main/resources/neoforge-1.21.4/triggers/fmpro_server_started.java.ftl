@@ -3,4 +3,3 @@
 	@net.neoforged.bus.api.SubscribeEvent public static void onServerStarted(net.neoforged.neoforge.event.server.ServerStartedEvent event) {
 		execute();
 	}
-}
