@@ -6,11 +6,15 @@ package ${package}.fmpro;
  */
 public final class FmproServerHolder {
 	private static volatile net.minecraft.server.MinecraftServer server;
+	private static boolean initialized;
 
 	private FmproServerHolder() {
 	}
 
 	public static void init() {
+		if (initialized)
+			return;
+		initialized = true;
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STARTED.register(
 				started -> FmproServerHolder.server = started);
 		net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents.SERVER_STOPPED.register(

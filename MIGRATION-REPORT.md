@@ -62,7 +62,7 @@ Minecraft 1.21.11 and the 26.x generators use `Identifier` instead of `ResourceL
 
 Minecraft 1.21.11 and newer no longer expose `Entity.getServer()`. The affected template families use `entity.level().getServer()`.
 
-Fabric does not expose a global current server. Each Fabric generator adds `FmproServerHolder`, registers `ServerLifecycleEvents.SERVER_STARTED` and `SERVER_STOPPED`, and initializes the holder from the generated procedure loader. The helper and loot templates read the captured server from that holder.
+Fabric does not expose a global current server. Each Fabric generator adds `FmproServerHolder`, registers `ServerLifecycleEvents.SERVER_STARTED` and `SERVER_STOPPED`, and the server-start procedure calls `FmproServerHolder.init()` before registering its loader callback. The helper and loot templates read the captured server from that holder.
 
 The Fabric helper fully qualifies `PackResources.ResourceOutput`, `IoSupplier` and `PackType`; an aggregate Fabric API jar does not expose those nested types to `javac` reliably when the generated source is compiled outside Loom.
 
@@ -70,7 +70,7 @@ Minecraft 1.20.6 and newer no longer expose item NBT as a direct `CompoundTag` f
 
 The item registry, effect registry and enchantment APIs change across the matrix and are selected by generator family. Fabric 1.20.1 uses `EnchantmentHelper.getItemEnchantmentLevel`; Fabric 1.21.1 and newer use the enchantment-component map; the 26.x families obtain enchantment holders from the server registry.
 
-The custom server trigger uses `ServerStartedEvent` on Forge and NeoForge. Fabric registers `ServerLifecycleEvents.SERVER_STARTED` from the trigger constructor.
+The custom server trigger uses `ServerStartedEvent` on Forge and NeoForge. Fabric initializes `FmproServerHolder` and registers `ServerLifecycleEvents.SERVER_STARTED` from the trigger constructor.
 
 ## Known Limitations
 

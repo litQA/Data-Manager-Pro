@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0.20-beta
+
+### Fixes
+- Fabric server-start procedures now initialize the generated server holder before registering the loader callback, so loot caches resolve the active server and custom loot no longer falls back to air.
+- The Fabric server holder now registers its lifecycle listeners only once, preventing duplicate registrations when several procedures use the server-start trigger.
+
 ## 1.2.0.19-beta
 
 ### Fixes

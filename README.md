@@ -115,6 +115,6 @@ Accepted path forms are `data/<namespace>/<path>.json`, `<namespace>:<path>.json
 - The loot cache keeps its contents when a scan is skipped, fails or finds no matching files. Set the loader's `force` input to true to replace it, including with an empty result.
 - Client-side custom loot calls return immediately without reading the data pack or the cache.
 - Loot NBT is converted from JSON into legacy tag types. On 1.20.6 and newer the values are stored in the `CustomData` component.
-- Fabric has no global current-server API. Server-dependent data-pack and loot lookups use a holder initialized by the generated procedure loader; this requires at least one external-trigger procedure in the mod.
+- Fabric has no global current-server API. Server-dependent data-pack and loot lookups use a holder initialized by the server-start procedure; this requires at least one external-trigger procedure in the mod.
 
 See `MIGRATION-REPORT.md` for known limitations and `CHANGELOG.md` for the change list.
