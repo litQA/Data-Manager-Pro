@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0.19-beta
+
+### Fixes
+- Fabric 1.21.1 server-start procedures now emit the class declaration required by that generator's trigger template, so generated procedures compile.
+- Loot folder scans rename their local resource-output class to prevent MCreator from adding the unrelated `com.ibm.icu.util.Output` import.
+
 ## 1.2.0.18-beta
 
 ### New Content

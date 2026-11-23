@@ -21,7 +21,7 @@ private static com.google.gson.JsonObject fmproLootLoad(String path) {
 private static java.util.Map<net.minecraft.resources.Identifier, net.minecraft.server.packs.resources.Resource>
 		fmproLootCacheScan(net.minecraft.server.packs.resources.ResourceManager manager, String namespace, String folderPath) {
 	java.util.Set<net.minecraft.resources.Identifier> locations = new java.util.HashSet<>();
-	class Output implements net.minecraft.server.packs.PackResources.ResourceOutput {
+	class FmproResourceOutput implements net.minecraft.server.packs.PackResources.ResourceOutput {
 		public void accept(net.minecraft.resources.Identifier location, net.minecraft.server.packs.resources.IoSupplier<java.io.InputStream> supplier) {
 			if (!location.getNamespace().equals(namespace)) return;
 			String prefix = folderPath + "/";
@@ -32,7 +32,7 @@ private static java.util.Map<net.minecraft.resources.Identifier, net.minecraft.s
 	}
 	manager.listPacks().forEach(pack -> {
 		for (String ns : pack.getNamespaces(net.minecraft.server.packs.PackType.SERVER_DATA)) {
-			pack.listResources(net.minecraft.server.packs.PackType.SERVER_DATA, ns, folderPath, new Output());
+			pack.listResources(net.minecraft.server.packs.PackType.SERVER_DATA, ns, folderPath, new FmproResourceOutput());
 		}
 	});
 	java.util.Map<net.minecraft.resources.Identifier, net.minecraft.server.packs.resources.Resource> found =
