@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.2.0.22-beta
+
+### New Content
+- Forge 1.12.2 support with the full file, text, JSON, ZIP, URL, collection and custom-loot procedure set.
+- Cross-mod data aggregation for Forge 1.12.2 through the loaded mod list and each `ModContainer` source, supporting both jar and directory mods.
+
+### Changes
+- The Forge 1.12.2 server-start trigger is called from both the client and dedicated-server proxies, so custom loot loaders run in single-player and on servers.
+- Forge 1.12.2 helpers use the legacy `ResourceLocation`, NBT, registry, potion, enchantment and item APIs and compile for Java 8.
+- The Forge 1.12.2 loot cache records the first matching mod source in mod-list order and does not depend on a server instance.
+
+### Known Limitations
+- Forge 1.12.2 has no data-pack merge or reload hook for this cache. Re-run `Load Loot Folder Into Cache` with `force` enabled after changing a data file.
+- Duplicate loot targets in Forge 1.12.2 resolve to the first loaded mod source; the plugin does not merge the duplicate file bodies.
+
 ## 1.2.0.21-beta
 
 ### Fixes

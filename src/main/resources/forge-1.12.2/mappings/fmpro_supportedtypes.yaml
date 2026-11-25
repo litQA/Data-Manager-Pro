@@ -1,0 +1,33 @@
+BlockState:
+ - IBlockState
+ - Blocks.AIR.getDefaultState()
+DamageSource:
+ - DamageSource
+ - null
+Direction:
+ - EnumFacing
+ - "EnumFacing.NORTH"
+Entity:
+ - Entity
+ - null
+ItemStack:
+ - ItemStack
+ - ItemStack.EMPTY
+Logic:
+ - Boolean
+ - "false"
+Number:
+ - Double
+ - "0.0"
+Text:
+ - String
+ - "\"\""
+List:
+ - java.util.ArrayList
+ - null
+Map:
+ - java.util.HashMap
+ - null
+_default:
+ - String
+ - "\"\""

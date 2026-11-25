@@ -5,14 +5,16 @@ File Manager Pro adds file, JSON, ZIP, URL, collection and custom-loot procedure
 ## Requirements
 
 - MCreator 2026.3 EAP with resource plugin support
-- Java 21
+- Java 21 to build the plugin; Forge 1.12.2 generated projects use Java 8
 - Gradle 9.9.1 when building the plugin from source
 
 Supported generators:
 
-- Forge 1.20.1, 1.20.4, 1.21.1 and 26.3
+- Forge 1.12.2, 1.20.1, 1.20.4, 1.21.1 and 26.3
 - NeoForge 1.21.1, 1.21.4, 1.21.8, 26.1.2, 26.2 and 26.3
 - Fabric 1.20.1, 1.21.1, 1.21.8, 1.21.11, 26.1.2, 26.2 and 26.3
+
+Forge 1.12.2 has no data-pack merge step. The plugin scans the source of every loaded mod, whether that source is a jar or a directory, and combines the matching `data/<namespace>/<path>` files in mod-list order. The first mod in that order wins when two files provide the same loot target.
 
 ## Installation
 
@@ -116,5 +118,7 @@ Accepted path forms are `data/<namespace>/<path>.json`, `<namespace>:<path>.json
 - Client-side custom loot calls return immediately without reading the data pack or the cache.
 - Loot NBT is converted from JSON into legacy tag types. On 1.20.6 and newer the values are stored in the `CustomData` component.
 - Fabric has no global current-server API. Server-dependent data-pack and loot lookups use a holder initialized by the server-start procedure; this requires at least one external-trigger procedure in the mod.
+- Forge 1.12.2 cache contents are not connected to a data-pack reload event. Call `Load Loot Folder Into Cache` with `force` enabled after changing a data file.
+- Forge 1.12.2 server-start procedures are invoked from both the client and dedicated-server proxies. Do not add a server-only side annotation to a custom server-start procedure.
 
 See `MIGRATION-REPORT.md` for known limitations and `CHANGELOG.md` for the change list.

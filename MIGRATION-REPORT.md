@@ -2,7 +2,7 @@
 
 ## Scope
 
-This report covers the MCreator 2026.3 EAP port of File Manager Pro. The plugin keeps the 2026.1 feature set:
+This report covers the MCreator 2026.3 EAP port of File Manager Pro, including the added Forge 1.12.2 target. The plugin keeps the 2026.1 feature set:
 
 - custom loot table conditions read from server data packs;
 - file, text, JSON, ZIP and URL procedures with typed file and JSON sockets;
@@ -14,6 +14,7 @@ The 2026.1 generator set is replaced by the 2026.3 generator set. The resource-o
 
 | Generator | Support |
 | --- | --- |
+| Forge 1.12.2 | yes |
 | Forge 1.20.1 | yes |
 | Forge 1.20.4 | yes |
 | Forge 1.21.1 | yes |
@@ -36,9 +37,9 @@ The 2026.1 generator set is replaced by the 2026.3 generator set. The resource-o
 
 The plugin is a resource plugin. It contains procedure definitions, toolbox categories, variable definitions, mappings and FreeMarker templates for each supported generator. No MCreator core classes are replaced or patched.
 
-Each generator directory has 86 procedure templates, 6 shared utility templates, 7 variable definitions, 3 mapping files and the plugin's server-start trigger. The procedure definitions and toolbox categories are shared through the resource root.
+Each generator directory has 86 procedure templates, 6 shared utility templates, 7 variable definitions, 3 mapping files and the plugin's server-start trigger. The procedure definitions and toolbox categories are shared through the resource root. The Forge 1.12.2 directory also carries client and server proxy overrides so its custom server-start trigger runs in both single-player and on a dedicated server.
 
-The 2026.3 port uses one directory per generator. Forge and NeoForge directories share the same procedure bodies and differ in their server trigger and version-specific helper calls. Fabric directories add a generated server holder, a generator overlay and a procedure-init override because Fabric has no global current-server API.
+The 2026.3 port uses one directory per generator. Forge and NeoForge directories share the same procedure bodies and differ in their server trigger and version-specific helper calls. Fabric directories add a generated server holder, a generator overlay and a procedure-init override because Fabric has no global current-server API. Forge 1.12.2 uses Java 8, old Forge registry names and direct mod-source scanning.
 
 Custom loot functions are generated as private static helpers through the procedure extra-template mechanism. The helpers are emitted once per generated procedure and remain local to that procedure class.
 
@@ -46,15 +47,17 @@ File and JSON procedures use the same typed-socket approach as the Collection pl
 
 Data-pack paths are normalized by the helper before lookup. Accepted forms are `data/<namespace>/<path>`, `<namespace>:<path>` and a bare path. A bare path uses the `minecraft` namespace. The `.json` suffix is optional.
 
-The custom loot cache stores the most recently parsed file and the resource-manager instance that produced it. A new resource manager is created by a data-pack reload, so the next call re-reads the file.
+On the modern generators the custom loot cache stores the most recently parsed file and the resource-manager instance that produced it. A new resource manager is created by a data-pack reload, so the next call re-reads the file. Forge 1.12.2 has no equivalent data-pack manager; it caches by normalized source path and is refreshed only by an explicit loader call.
 
-Folder mode uses a separate `JsonLootCache` variable. The `Load Loot Folder Into Cache` procedure scans the direct `.json` children of one data-pack folder, reads each root, and stores roots in an `entries` object keyed by `type|target_block`. Paths are sorted before insertion, so when several files share a target the first path wins and later files are reported on standard error. The cache also records the folder and type that produced it.
+Folder mode uses a separate `JsonLootCache` variable. The `Load Loot Folder Into Cache` procedure scans the direct `.json` children of one data-pack folder, reads each root, and stores roots in an `entries` object keyed by `type|target_block`. Modern generators sort paths before insertion; Forge 1.12.2 walks the loaded mod list in order. In both cases the first file for a target wins and later files are reported on standard error. The cache also records the folder and type that produced it.
 
 The loader is explicit. It does nothing when the same folder and type are already loaded, warns and keeps the previous cache when the metadata differs, and rebuilds when `force` is true. A failed or empty scan leaves the previous cache untouched unless `force` is true. The cache is never expired automatically: after `/reload` the user either calls the loader again or keeps the old cache intentionally. One cache describes one folder; separate folders need separate cache variables.
 
 ZIP operations are implemented with `java.util.zip`. Adding a file to an existing archive rewrites the archive through a temporary file so the central directory is not corrupted.
 
 ## Compatibility Notes
+
+Forge 1.12.2 uses Java 8, `net.minecraft.util.ResourceLocation`, `NBTTagCompound`/`NBTTagList`, `ForgeRegistries` and `EnchantmentHelper.getEnchantmentLevel`. It has no per-mod classloader: `Loader.getModClassLoader()` is one global loader for every mod. The plugin therefore reads each `ModContainer.getSource()` as a jar or directory and scans `data/<namespace>/<path>` directly. This is the supported aggregation point for cross-mod data in 1.12.2.
 
 Forge 1.20.1 and 1.20.4 use their Forge registry and resource APIs. Forge 1.21.1 and Forge 26.3 use the modern registry and component APIs. NeoForge 1.21.1, 1.21.4 and 1.21.8 use the NeoForge server lifecycle API. NeoForge 26.1.2, 26.2 and 26.3 use the same modern registry API with the 26.x resource identifiers.
 
@@ -70,7 +73,7 @@ Minecraft 1.20.6 and newer no longer expose item NBT as a direct `CompoundTag` f
 
 The item registry, effect registry and enchantment APIs change across the matrix and are selected by generator family. Fabric 1.20.1 uses `EnchantmentHelper.getItemEnchantmentLevel`; Fabric 1.21.1 and newer use the enchantment-component map; the 26.x families obtain enchantment holders from the server registry.
 
-The custom server trigger uses `ServerStartedEvent` on Forge and NeoForge. Fabric initializes `FmproServerHolder` and registers `ServerLifecycleEvents.SERVER_STARTED` from the trigger constructor.
+The custom server trigger uses `ServerStartedEvent` on Forge and NeoForge. Fabric initializes `FmproServerHolder` and registers `ServerLifecycleEvents.SERVER_STARTED` from the trigger constructor. Forge 1.12.2 has no matching global event hook in the stock generator, so the plugin overrides both proxy classes and calls `fmpro_server_started` procedures from `serverLoad(FMLServerStartingEvent)`. The trigger class deliberately has no `@SideOnly(SERVER)` annotation because the client proxy must load it in single-player.
 
 ## Known Limitations
 
@@ -80,7 +83,9 @@ The custom server trigger uses `ServerStartedEvent` on Forge and NeoForge. Fabri
 - Custom loot file reads and ZIP, URL, JSON and text operations are blocking. They should not be called every client tick.
 - The `download url to file` procedure uses the platform URL connection defaults and does not expose connection or read timeouts.
 - Data-pack lookup is server-side only. Integrated-server single-player satisfies the server requirement; a dedicated client without a server returns the fallback value.
-- Data-pack cache invalidation follows the resource-manager instance. Reloads that reuse the same manager are not detected.
+- Data-pack cache invalidation follows the resource-manager instance on modern generators. Reloads that reuse the same manager are not detected.
+- Forge 1.12.2 data is not merged by the game. The plugin scans each loaded mod source in mod-list order; duplicate targets resolve to the first source. A source that is neither a regular file nor a directory is ignored.
+- Forge 1.12.2 has no data-pack reload hook for this cache. Re-run `Load Loot Folder Into Cache` with `force` enabled after editing a data file.
 - The folder loot cache has no automatic expiry. A procedure must call `Load Loot Folder Into Cache` after `/reload`, or pass `force` true, to rebuild it. Leaving the loader out deliberately keeps the previous contents.
 - The loader must run from the `Server Started (Integrated And Dedicated)` trigger, not the built-in `Server Load` trigger: the latter is dedicated-server-only.
 - One loot cache stores one folder and one procedure type. Use separate `JsonLootCache` variables for separate folders.
@@ -98,10 +103,10 @@ The custom server trigger uses `ServerStartedEvent` on Forge and NeoForge. Fabri
 
 ## Verification
 
-The resource tree is checked with `caches/validate_2026.3.py`: 93 procedure JSON files, 17 generator directories, 7 variables, 3 mappings and one trigger per generator.
+The resource tree is checked with `caches/validate_2026.3.py`: 93 procedure JSON files, 18 generator directories, 7 variables, 3 mappings and one trigger per generator. The Forge 1.12.2 checks also require both proxy overrides, `getModList()`/`getSource()` source scanning and `fmproReadDatapackFolder`.
 
-All 1,564 procedure and utility templates render with FreeMarker 2.3.35.
+All 1,656 procedure and utility templates render with FreeMarker 2.3.35.
 
-Fabric helper/loot stubs compile for 1.20.1, 1.21.1, 1.21.8, 1.21.11, 26.1.2, 26.2 and 26.3. The 26.3 pass uses the 26.2 merged API jar and the 26.3 generator templates.
+Fabric helper/loot stubs compile for 1.20.1, 1.21.1, 1.21.8, 1.21.11, 26.1.2, 26.2 and 26.3. The 26.3 pass uses the 26.2 merged API jar and the 26.3 generator templates. The Forge 1.12.2 helper, loot and trigger stubs compile with Java 8 against the recompiled 1.12.2 Minecraft jar and the Forge 1.12.2 userdev jar. The rendered Forge 1.12.2 client and server proxy classes compile on the same classpath and invoke the generated server-start procedure.
 
 `gradlew.bat pluginZip` produces `build/distributions/file-manager-pro-2026.3.zip`. Real-machine validation in MCreator 2026.3 EAP is required before release use.

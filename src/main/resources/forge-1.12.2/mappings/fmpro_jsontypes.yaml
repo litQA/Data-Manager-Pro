@@ -1,0 +1,15 @@
+Text:
+ - String
+ - "\"\""
+Number:
+ - Double
+ - "0.0"
+Logic:
+ - Boolean
+ - "false"
+JsonObject:
+ - com.google.gson.JsonObject
+ - "new com.google.gson.JsonObject()"
+JsonArray:
+ - com.google.gson.JsonArray
+ - "new com.google.gson.JsonArray()"
